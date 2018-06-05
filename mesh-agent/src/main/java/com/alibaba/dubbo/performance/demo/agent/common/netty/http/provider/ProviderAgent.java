@@ -1,6 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider;
 
-import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Order;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentRequest;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequestDecoder;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonResponseEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -37,7 +37,7 @@ public class ProviderAgent {
                             //HttpResponseEncoder->FullHttpResponse-> HttpJsonResponseEncoder
                             ch.pipeline().addLast("http-decoder", new HttpRequestDecoder());
                             ch.pipeline().addLast("http-aggregator", new HttpObjectAggregator(65536));
-                            ch.pipeline().addLast("json-decoder", new HttpJsonRequestDecoder(Order.class, true));
+                            ch.pipeline().addLast("json-decoder", new HttpJsonRequestDecoder(AgentRequest.class, true));
                             ch.pipeline().addLast("http-encoder", new HttpResponseEncoder());
                             ch.pipeline().addLast("json-encoder", new HttpJsonResponseEncoder());
                             ch.pipeline().addLast("jsonServerHandler", new ProviderHandler());

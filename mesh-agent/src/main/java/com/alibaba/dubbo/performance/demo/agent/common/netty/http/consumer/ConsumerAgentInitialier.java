@@ -1,6 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.common.netty.http.consumer;
 
-import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Order;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentResponse;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequestEncoder;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonResponseDecoder;
 import io.netty.channel.ChannelInitializer;
@@ -20,7 +20,7 @@ public class ConsumerAgentInitialier extends ChannelInitializer<SocketChannel> {
         pipeline.addLast("http-aggregator",
                 new HttpObjectAggregator(65536));
         // json解码器
-        pipeline.addLast("json-decoder", new HttpJsonResponseDecoder(Order.class, true));
+        pipeline.addLast("json-decoder", new HttpJsonResponseDecoder(AgentResponse.class, true));
         pipeline.addLast("http-encoder",
                 new HttpRequestEncoder());
         pipeline.addLast("json-encoder",
