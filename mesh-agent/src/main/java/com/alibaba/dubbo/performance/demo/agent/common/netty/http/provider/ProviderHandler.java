@@ -28,10 +28,13 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * Created by carl.yu on 2016/12/16.
  */
 public class ProviderHandler extends SimpleChannelInboundHandler<HttpJsonRequest> {
-    private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
 
-    private RpcClient rpcClient = new RpcClient(registry);
-
+    private RpcClient rpcClient;
+    IRegistry registry;
+    public ProviderHandler(IRegistry registry){
+        this.registry = registry;
+        this.rpcClient = new RpcClient(registry);
+    }
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, HttpJsonRequest msg) throws Exception {
         HttpRequest request = msg.getRequest();
