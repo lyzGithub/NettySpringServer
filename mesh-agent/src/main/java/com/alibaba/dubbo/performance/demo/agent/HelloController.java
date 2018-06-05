@@ -1,6 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent;
 
-import com.alibaba.dubbo.performance.demo.agent.consumer.ConsumerAgent;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentResponse;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
@@ -94,6 +94,8 @@ public class HelloController {
         return (byte[]) result;
     }
 
+
+    ConsumerAgentClient consumerAgentClient = new ConsumerAgentClient(registry);
     public Integer myConsumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
 
         if (null == endpoints){
@@ -107,35 +109,13 @@ public class HelloController {
         // 简单的负载均衡，随机取一个
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
+        //my trans method
+        AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
+                parameter,endpoint.getHost(),endpoint.getPort());
+        byte[] bytes = agentResponse.getBytes();
+        String s = new String(bytes);
+        return Integer.valueOf(s);
 
-
-
-
-        String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
-
-        RequestBody requestBody = new FormBody.Builder()
-                .add("interface",interfaceName)
-                .add("method",method)
-                .add("parameterTypesString",parameterTypesString)
-                .add("parameter",parameter)
-                .build();
-
-
-        ConsumerAgent.run(endpoint.getHost(), endpoint.getPort(),requestBody);
-
-
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(requestBody)
-                .build();
-
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            byte[] bytes = response.body().bytes();
-            String s = new String(bytes);
-            return Integer.valueOf(s);
-        }
     }
 
 }

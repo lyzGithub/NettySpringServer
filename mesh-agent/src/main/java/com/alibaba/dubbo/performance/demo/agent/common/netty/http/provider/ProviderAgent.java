@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.provider;
+package com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider;
 
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Order;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequestDecoder;

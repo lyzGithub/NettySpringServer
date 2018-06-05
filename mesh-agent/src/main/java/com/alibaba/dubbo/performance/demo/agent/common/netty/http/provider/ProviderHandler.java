@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.provider;
+package com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
