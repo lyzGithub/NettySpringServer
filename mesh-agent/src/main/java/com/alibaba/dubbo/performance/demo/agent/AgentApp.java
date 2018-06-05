@@ -25,7 +25,7 @@ public class AgentApp {
         else if ("provider".equals(type)){
 
             try {
-                ProviderAgent.run("localhost",3000);
+                ProviderAgent.run("localhost",30000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
