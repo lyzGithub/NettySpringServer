@@ -29,7 +29,9 @@ public class HelloController {
     private Random random = new Random();
     private List<Endpoint> endpoints = null;
     private Object lock = new Object();
-    private OkHttpClient httpClient = new OkHttpClient();
+    ConsumerAgentClient consumerAgentClient = new ConsumerAgentClient(registry);
+
+    //private OkHttpClient httpClient = new OkHttpClient();
 
     //都是来自于consumer, 或者是provider的请求: http://localhost:port, 判断invoke 来自哪里
     @RequestMapping(value = "")
@@ -37,7 +39,7 @@ public class HelloController {
                          @RequestParam("method") String method,
                          @RequestParam("parameterTypesString") String parameterTypesString,
                          @RequestParam("parameter") String parameter) throws Exception {
-        String type = System.getProperty("type");   // 获取type参数
+        /*String type = System.getProperty("type");   // 获取type参数
         if ("consumer".equals(type)){
             return consumer(interfaceName,method,parameterTypesString,parameter);
         }
@@ -45,16 +47,43 @@ public class HelloController {
             return provider(interfaceName,method,parameterTypesString,parameter);
         }else {
             return "Environment variable type is needed to set to provider or consumer.";
-        }
+        }*/
+
+        return myConsumer(interfaceName,method,parameterTypesString,parameter);
+
     }
 
-    public byte[] provider(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
+
+
+    public Integer myConsumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
+
+        if (null == endpoints){
+            synchronized (lock){
+                if (null == endpoints){
+                    endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
+                }
+            }
+        }
+
+        // 简单的负载均衡，随机取一个
+        Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
+
+        //my trans method
+        AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
+                parameter,endpoint.getHost(),endpoint.getPort());
+        byte[] bytes = agentResponse.getBytes();
+        String s = new String(bytes);
+        return Integer.valueOf(s);
+
+    }
+
+    /*public byte[] provider(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
 
         Object result = rpcClient.invoke(interfaceName,method,parameterTypesString,parameter);
         return (byte[]) result;
     }
-
-    public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
+    */
+    /*public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
 
         if (null == endpoints){
             synchronized (lock){
@@ -87,35 +116,6 @@ public class HelloController {
             String s = new String(bytes);
             return Integer.valueOf(s);
         }
-    }
-
-    public byte[] myProvider(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
-        Object result = rpcClient.invoke(interfaceName,method,parameterTypesString,parameter);
-        return (byte[]) result;
-    }
-
-
-    ConsumerAgentClient consumerAgentClient = new ConsumerAgentClient(registry);
-    public Integer myConsumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
-
-        if (null == endpoints){
-            synchronized (lock){
-                if (null == endpoints){
-                    endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
-                }
-            }
-        }
-
-        // 简单的负载均衡，随机取一个
-        Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
-
-        //my trans method
-        AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
-                parameter,endpoint.getHost(),endpoint.getPort());
-        byte[] bytes = agentResponse.getBytes();
-        String s = new String(bytes);
-        return Integer.valueOf(s);
-
-    }
+    }*/
 
 }

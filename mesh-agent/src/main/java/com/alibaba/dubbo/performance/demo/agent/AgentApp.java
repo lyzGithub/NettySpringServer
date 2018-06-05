@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent;
 
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider.ProviderAgent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,7 +19,11 @@ public class AgentApp {
         }
 
         else if ("provider".equals(type)){
-
+            try {
+                ProviderAgent.run("localhost",3000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

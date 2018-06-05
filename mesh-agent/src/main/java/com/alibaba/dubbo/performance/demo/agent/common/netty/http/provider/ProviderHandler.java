@@ -1,5 +1,12 @@
 package com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider;
 
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentRequest;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentResponse;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.AgentRpcInvocation;
+import com.alibaba.dubbo.performance.demo.agent.common.netty.http.common.ObjectAndByte;
+import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
+import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
+import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -9,13 +16,9 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Address;
-import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Order;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequest;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonResponse;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -25,13 +28,24 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * Created by carl.yu on 2016/12/16.
  */
 public class ProviderHandler extends SimpleChannelInboundHandler<HttpJsonRequest> {
+    private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
+
+    private RpcClient rpcClient = new RpcClient(registry);
+
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, HttpJsonRequest msg) throws Exception {
         HttpRequest request = msg.getRequest();
-        Order order = (Order) msg.getBody();
+        AgentRequest agentRequest = (AgentRequest) msg.getBody();
+        AgentRpcInvocation agentRpcInvocation = (AgentRpcInvocation)agentRequest.getData();
+
         //System.out.println("Http server receive request : " + order);
-        dobusiness(order);
-        ChannelFuture future = ctx.writeAndFlush(new HttpJsonResponse(null, order));
+        Object result = rpcClient.invoke(agentRpcInvocation.getAttachment("path"),agentRequest.getMethodName(),agentRequest.getParameterTypesString(),
+                new String(agentRpcInvocation.getArguments()));
+
+        byte [] myB = ObjectAndByte.toByteArray(result);
+        AgentResponse agentResponse = new AgentResponse();
+        agentResponse.setBytes((byte[]) result );
+        ChannelFuture future = ctx.writeAndFlush(new HttpJsonResponse(null, agentResponse));
         if (!HttpUtil.isKeepAlive(request)) {
             future.addListener(new GenericFutureListener<Future<? super Void>>() {
                 public void operationComplete(Future future) throws Exception {
@@ -41,20 +55,6 @@ public class ProviderHandler extends SimpleChannelInboundHandler<HttpJsonRequest
         }
     }
 
-    private void dobusiness(Order order) {
-        order.getCustomer().setFirstName("狄");
-        order.getCustomer().setLastName("仁杰");
-        List<String> midNames = new ArrayList<String>();
-        midNames.add("李元芳");
-        order.getCustomer().setMiddleNames(midNames);
-        Address address = order.getBillTo();
-        address.setCity("洛阳");
-        address.setCountry("大唐");
-        address.setState("河南道");
-        address.setPostCode("123456");
-        order.setBillTo(address);
-        order.setShipTo(address);
-    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)

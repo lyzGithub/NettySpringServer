@@ -40,6 +40,7 @@ public class ConsumerAgentClient {
         request.setTwoWay(true);
         request.setData(invocation);
 
+
         logger.info("requestId=" + request.getId());
 
         AgentRpcFuture future = new AgentRpcFuture();
