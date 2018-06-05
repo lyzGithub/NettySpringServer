@@ -66,6 +66,9 @@ public class HelloController {
         }
 
         // 简单的负载均衡，随机取一个
+        if(endpoints.size() <=0 ){
+            logger.error("etcd no endpoint!!");
+        }
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
         //my trans method
