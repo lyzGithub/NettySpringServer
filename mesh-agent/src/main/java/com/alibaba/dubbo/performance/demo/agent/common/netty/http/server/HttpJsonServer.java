@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.provider;
+package com.alibaba.dubbo.performance.demo.agent.common.netty.http.server;
 
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.info.Order;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequestDecoder;
@@ -19,8 +19,8 @@ import java.net.InetSocketAddress;
 /**
  * Created by carl.yu on 2016/12/16.
  */
-public class ProviderAgent {
-    public void beginServe(final String hostName, final int port) throws Exception {
+public class HttpJsonServer {
+    public void run(final int port) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -40,10 +40,10 @@ public class ProviderAgent {
                             ch.pipeline().addLast("json-decoder", new HttpJsonRequestDecoder(Order.class, true));
                             ch.pipeline().addLast("http-encoder", new HttpResponseEncoder());
                             ch.pipeline().addLast("json-encoder", new HttpJsonResponseEncoder());
-                            ch.pipeline().addLast("jsonServerHandler", new ProviderHandler());
+                            ch.pipeline().addLast("jsonServerHandler", new HttpJsonServerHandler());
                         }
                     });
-            ChannelFuture future = b.bind(new InetSocketAddress(hostName, port)).sync();
+            ChannelFuture future = b.bind(new InetSocketAddress(port)).sync();
             System.out.println("HTTP订购服务器启动，网址是 : " + "http://localhost:"
                     + port);
             future.channel().closeFuture().sync();
@@ -53,7 +53,15 @@ public class ProviderAgent {
         }
     }
 
-    public static void run(final String hostName, final int port) throws Exception {
-        new ProviderAgent().beginServe(hostName, port);
+    public static void main(String[] args) throws Exception {
+        int port = 8080;
+        if (args.length > 0) {
+            try {
+                port = Integer.parseInt(args[0]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        new HttpJsonServer().run(port);
     }
 }

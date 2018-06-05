@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.consumer;
+package com.alibaba.dubbo.performance.demo.agent.common.netty.http.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -20,8 +20,8 @@ import java.net.InetSocketAddress;
 /**
  * Created by carl.yu on 2016/12/16.
  */
-public class ConsumerAgent {
-    public void connect(final String hostName, final int port, Object body) throws Exception {
+public class HttpJsonClient {
+    public void connect(int port) throws Exception {
         // 配置客户端NIO线程组
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -43,12 +43,12 @@ public class ConsumerAgent {
                             ch.pipeline().addLast("json-encoder",
                                     new HttpJsonRequestEncoder());
                             ch.pipeline().addLast("jsonClientHandler",
-                                    new ConsumerHandler());
+                                    new HttpJsonClientHandler());
                         }
                     });
 
             // 发起异步连接操作
-            ChannelFuture f = b.connect(new InetSocketAddress(hostName, port)).sync();
+            ChannelFuture f = b.connect(new InetSocketAddress(port)).sync();
 
             // 当代客户端链路关闭
             f.channel().closeFuture().sync();
@@ -59,11 +59,18 @@ public class ConsumerAgent {
     }
 
     /**
-     * @params hostName, port
+     * @param args
      * @throws Exception
      */
-    public static void run(final String hostName, final int port, Object body) throws Exception {
-
-        new ConsumerAgent().connect(hostName, port, body);
+    public static void main(String[] args) throws Exception {
+        int port = 8080;
+        if (args != null && args.length > 0) {
+            try {
+                port = Integer.valueOf(args[0]);
+            } catch (NumberFormatException e) {
+                // 采用默认值
+            }
+        }
+        new HttpJsonClient().connect(port);
     }
 }
