@@ -29,7 +29,7 @@ public class HelloController {
     private Random random = new Random();
     private List<Endpoint> endpoints = null;
     private Object lock = new Object();
-    ConsumerAgentClient consumerAgentClient = new ConsumerAgentClient(registry);
+    //ConsumerAgentClient consumerAgentClient = new ConsumerAgentClient(registry);
 
     //private OkHttpClient httpClient = new OkHttpClient();
 
@@ -76,13 +76,16 @@ public class HelloController {
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
         logger.info("enpoint host: " + endpoint.getHost()+ ", port "+ endpoint.getPort());
+
+        ConsumerAgentClient.run(endpoint.getHost(),endpoint.getPort());
         //my trans method
-        AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
-                parameter,endpoint.getHost(),endpoint.getPort());
-        byte[] bytes = agentResponse.getBytes();
-        String s = new String(bytes);
-        logger.info("consumer agent get string:" + s);
-        return Integer.valueOf(s);
+        /*AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
+                parameter,endpoint.getHost(),endpoint.getPort());*/
+        //byte[] bytes = agentResponse.getBytes();
+        //String s = new String(bytes);
+        logger.info("consumer agent get string from consumer:" + parameter);
+
+        return Integer.valueOf(1);
 
     }
 

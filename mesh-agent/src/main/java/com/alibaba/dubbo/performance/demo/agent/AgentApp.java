@@ -26,7 +26,7 @@ public class AgentApp {
         else if ("provider".equals(type)){
             logger.info("Netty in the provider!");
             try {
-                ProviderAgent.run(IpHelper.getHostIp(), Integer.valueOf(System.getProperty("server.port")) );
+                ProviderAgentServer.run(IpHelper.getHostIp(), Integer.valueOf(System.getProperty("server.port")) );
             } catch (Exception e) {
                 e.printStackTrace();
             }
