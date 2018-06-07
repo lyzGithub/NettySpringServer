@@ -47,7 +47,7 @@ public class ProviderAgent {
                         }
                     });
             ChannelFuture future = b.bind(new InetSocketAddress(hostName, port)).sync();
-            System.out.println("网址是 : " + "http://localhost:"
+            System.out.println("网址是 : " + hostName+":"
                     + port);
             future.channel().closeFuture().sync();
         } finally {
