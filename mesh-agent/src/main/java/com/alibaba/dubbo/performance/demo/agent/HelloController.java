@@ -49,12 +49,13 @@ public class HelloController {
 
     public byte[] provider(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
 
+        System.out.println("provider: "+interfaceName+method +":" + parameterTypesString +":"+ parameter);
         Object result = rpcClient.invoke(interfaceName,method,parameterTypesString,parameter);
         return (byte[]) result;
     }
 
     public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
-
+        System.out.println("provider: "+interfaceName+method +":" + parameterTypesString +":"+ parameter);
         if (null == endpoints){
             synchronized (lock){
                 if (null == endpoints){
