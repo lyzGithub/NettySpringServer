@@ -19,13 +19,13 @@ public class AgentApp {
         logger.info("docker type" + type);
         if ("consumer".equals(type)){
             SpringApplication.run(AgentApp.class,args);
-            logger.info("SpringApplication!");
+            logger.info("SpringApplication in Concumer !");
         }
 
         else if ("provider".equals(type)){
-
+            logger.info("Netty in the provider!");
             try {
-                ProviderAgent.run("localhost",30000);
+                ProviderAgent.run("localhost", Integer.valueOf(System.getProperty("server.port")) );
             } catch (Exception e) {
                 e.printStackTrace();
             }

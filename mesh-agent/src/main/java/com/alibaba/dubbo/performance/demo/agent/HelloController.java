@@ -57,6 +57,8 @@ public class HelloController {
 
     public Integer myConsumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
 
+        logger.info("Get http request from the consumer in the consumer agent!");
+
         if (null == endpoints){
             synchronized (lock){
                 if (null == endpoints){
@@ -69,8 +71,11 @@ public class HelloController {
         if(endpoints.size() <=0 ){
             logger.error("etcd no endpoint!!");
         }
+        logger.error("Etcd  endpoint get!!");
+
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
+        logger.info("enpoint host: " + endpoint.getHost()+ ", port "+ endpoint.getPort());
         //my trans method
         AgentResponse agentResponse = (AgentResponse)consumerAgentClient.invoke(interfaceName,method,parameterTypesString,
                 parameter,endpoint.getHost(),endpoint.getPort());
