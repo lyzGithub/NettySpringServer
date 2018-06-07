@@ -1,6 +1,7 @@
 package com.alibaba.dubbo.performance.demo.agent;
 
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.provider.ProviderAgent;
+import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +26,7 @@ public class AgentApp {
         else if ("provider".equals(type)){
             logger.info("Netty in the provider!");
             try {
-                ProviderAgent.run("localhost", Integer.valueOf(System.getProperty("server.port")) );
+                ProviderAgent.run(IpHelper.getHostIp(), Integer.valueOf(System.getProperty("server.port")) );
             } catch (Exception e) {
                 e.printStackTrace();
             }
