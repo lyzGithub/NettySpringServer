@@ -49,8 +49,7 @@ public class ProviderAgentServer {
     /**
      * @throws Exception
      */
-    public static void run(final String host, final int prot) throws Exception {
-        int port = 8080;
+    public static void run(final String host, final int port) throws Exception {
         new ProviderAgentServer().bind(host, port);
     }
 }

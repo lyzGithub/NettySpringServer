@@ -4,15 +4,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProviderAgentServerHandler extends ChannelInboundHandlerAdapter {
     private int counter;
+    private Logger logger = LoggerFactory.getLogger(ProviderAgentServerHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String body = (String) msg;
-        System.out.println("The time server receive order : " + body
+        logger.info("The time server receive order : " + body
                 + " ; the counter is : " + ++counter);
         String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new java.util.Date(
                 System.currentTimeMillis()).toString() : "BAD ORDER";

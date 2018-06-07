@@ -27,7 +27,8 @@ public class ConsumerAgentClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         ByteBuf message = null;
-        for (int i = 0; i < 100; i++) {
+        logger.info("Active one  in consumer client!");
+        for (int i = 0; i < 1; i++) {
             message = Unpooled.buffer(req.length);
             message.writeBytes(req);
             ctx.writeAndFlush(message);
