@@ -18,6 +18,8 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonRequest;
 import com.alibaba.dubbo.performance.demo.agent.common.netty.http.jsonCode.HttpJsonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -28,6 +30,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * Created by carl.yu on 2016/12/16.
  */
 public class ProviderHandler extends SimpleChannelInboundHandler<HttpJsonRequest> {
+    private Logger logger = LoggerFactory.getLogger(ProviderHandler.class);
 
     private RpcClient rpcClient;
     IRegistry registry;
@@ -37,9 +40,12 @@ public class ProviderHandler extends SimpleChannelInboundHandler<HttpJsonRequest
     }
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, HttpJsonRequest msg) throws Exception {
+        logger.info("Get one massege in the provider!");
         HttpRequest request = msg.getRequest();
         AgentRequest agentRequest = (AgentRequest) msg.getBody();
         AgentRpcInvocation agentRpcInvocation = (AgentRpcInvocation)agentRequest.getData();
+        logger.info("message is: " + agentRpcInvocation.getAttachment("path")+" "+agentRequest.getMethodName()+" "+agentRequest.getParameterTypesString()+" "+
+                new String(agentRpcInvocation.getArguments()));
 
         //System.out.println("Http server receive request : " + order);
         Object result = rpcClient.invoke(agentRpcInvocation.getAttachment("path"),agentRequest.getMethodName(),agentRequest.getParameterTypesString(),

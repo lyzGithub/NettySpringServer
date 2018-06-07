@@ -71,7 +71,7 @@ public class HelloController {
         if(endpoints.size() <=0 ){
             logger.error("etcd no endpoint!!");
         }
-        logger.error("Etcd  endpoint get!!");
+        logger.info("Etcd  endpoint get!!");
 
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
