@@ -81,6 +81,7 @@ public class HelloController {
                 parameter,endpoint.getHost(),endpoint.getPort());
         byte[] bytes = agentResponse.getBytes();
         String s = new String(bytes);
+        logger.info("consumer agent get string:" + s);
         return Integer.valueOf(s);
 
     }
