@@ -42,7 +42,7 @@ public class ProviderAgentServer {
         protected void initChannel(SocketChannel arg0) throws Exception {
             arg0.pipeline().addLast(new LineBasedFrameDecoder(1024));
             arg0.pipeline().addLast(new StringDecoder());
-            arg0.pipeline().addLast(new ProviderAgentServerHandler());
+            arg0.pipeline().addLast(new ProviderAgentServerHandler(registry));
         }
     }
 
