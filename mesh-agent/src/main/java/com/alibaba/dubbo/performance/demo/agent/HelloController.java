@@ -56,13 +56,13 @@ public class HelloController {
 
     public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
         //System.out.println("provider: "+interfaceName+":"+method +":" + parameterTypesString +":"+ parameter);
-        if (null == endpoints){
+        /*if (null == endpoints){
             synchronized (lock){
                 if (null == endpoints){
-                    endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
                 }
             }
-        }
+        }*/
+        endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
 
         int size = 0;
         size = endpoints.size();
