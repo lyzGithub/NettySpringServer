@@ -70,8 +70,7 @@ public class HelloController {
 
         String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
         System.out.println("url: "+url + "endpoints.size(): " + size + "random.nextInt(endpoints.size()): "+temp);
-        return 1;
-        /*RequestBody requestBody = new FormBody.Builder()
+        RequestBody requestBody = new FormBody.Builder()
                 .add("interface",interfaceName)
                 .add("method",method)
                 .add("parameterTypesString",parameterTypesString)
@@ -88,6 +87,6 @@ public class HelloController {
             byte[] bytes = response.body().bytes();
             String s = new String(bytes);
             return Integer.valueOf(s);
-        }*/
+        }
     }
 }
