@@ -21,20 +21,15 @@ public class ProviderAgentServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String body = (String) msg;
-        logger.info("The time server receive order : " + body
-                + " ; the counter is : " + ++counter);
-        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new java.util.Date(
-                System.currentTimeMillis()).toString() : "BAD ORDER";
-        currentTime = currentTime + System.getProperty("line.separator");
+
         String interFaceName = "com.alibaba.dubbo.performance.demo.provider.IHelloService";
         String method = "hash";
         String path = "Ljava/lang/String;";
-        String para = currentTime;
+        String para = body;
         byte[] bytes = (byte[])rpcClient.invoke(interFaceName,method,path,para);
         String hashCode = new String(bytes);
-        String all = hashCode + "+ "+ currentTime;
-        logger.info("hashcode: " + hashCode);
-        ByteBuf resp = Unpooled.copiedBuffer(all.getBytes());
+        logger.info("all: " + hashCode);
+        ByteBuf resp = Unpooled.copiedBuffer(hashCode.getBytes());
         ctx.writeAndFlush(resp);
         logger.info("write done!!");
     }
