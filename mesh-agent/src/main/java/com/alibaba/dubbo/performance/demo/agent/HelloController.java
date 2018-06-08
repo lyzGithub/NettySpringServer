@@ -64,11 +64,12 @@ public class HelloController {
             }
         }
 
+        int temp = random.nextInt(endpoints.size());
         // 简单的负载均衡，随机取一个
-        Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
+        Endpoint endpoint = endpoints.get(temp);
 
         String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
-        System.out.println("url: "+url + "endpoints.size(): " + endpoints.size() + "random.nextInt(endpoints.size()): "+random.nextInt(endpoints.size()));
+        System.out.println("url: "+url + "endpoints.size(): " + endpoints.size() + "random.nextInt(endpoints.size()): "+temp);
         RequestBody requestBody = new FormBody.Builder()
                 .add("interface",interfaceName)
                 .add("method",method)
