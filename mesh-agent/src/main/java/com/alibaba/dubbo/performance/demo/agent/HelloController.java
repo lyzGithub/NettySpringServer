@@ -68,7 +68,7 @@ public class HelloController {
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
         String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
-        System.out.println("url: "+url);
+        System.out.println("url: "+url + "endpoints.size(): " + endpoints.size() + "random.nextInt(endpoints.size()): "+random.nextInt(endpoints.size()));
         RequestBody requestBody = new FormBody.Builder()
                 .add("interface",interfaceName)
                 .add("method",method)
