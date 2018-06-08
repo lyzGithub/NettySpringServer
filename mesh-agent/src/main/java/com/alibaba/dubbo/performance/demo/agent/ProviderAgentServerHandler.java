@@ -21,7 +21,7 @@ public class ProviderAgentServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg)
             throws Exception {
         String body = (String) msg;
-
+        System.out.println("request body: " + body);
         String interFaceName = "com.alibaba.dubbo.performance.demo.provider.IHelloService";
         String method = "hash";
         String path = "Ljava/lang/String;";

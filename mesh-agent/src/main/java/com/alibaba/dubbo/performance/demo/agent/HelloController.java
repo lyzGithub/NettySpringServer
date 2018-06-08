@@ -58,19 +58,15 @@ public class HelloController {
 
         //logger.info("Get http request from the consumer in the consumer agent!");
 
-        if (null == endpoints){
-            synchronized (lock){
-                if (null == endpoints){
-                    endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
-                }
-            }
+        synchronized (lock){
+            endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
         }
 
         // 简单的负载均衡，随机取一个
         if(endpoints.size() <=0 ){
             logger.error("etcd no endpoint!!");
         }
-        //logger.info("Etcd  endpoint get!!");
+        logger.info("Etcd  endpoint size!!" + endpoints.size());
 
         Endpoint endpoint = endpoints.get(random.nextInt(endpoints.size()));
 
