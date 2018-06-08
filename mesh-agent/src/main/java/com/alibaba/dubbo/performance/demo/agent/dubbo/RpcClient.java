@@ -44,7 +44,6 @@ public class RpcClient {
         request.setTwoWay(true);
         request.setData(invocation);
 
-        logger.info("requestId=" + request.getId());
 
         RpcFuture future = new RpcFuture();
         RpcRequestHolder.put(String.valueOf(request.getId()),future);
@@ -57,6 +56,8 @@ public class RpcClient {
         }catch (Exception e){
             e.printStackTrace();
         }
+        logger.info("return requestId=" + request.getId());
+
         return result;
     }
 }
