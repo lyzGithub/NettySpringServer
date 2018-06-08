@@ -32,9 +32,11 @@ public class ProviderAgentServerHandler extends ChannelInboundHandlerAdapter {
         String para = currentTime;
         byte[] bytes = (byte[])rpcClient.invoke(interFaceName,method,path,para);
         String hashCode = new String(bytes);
+        String all = hashCode + "+ "+ currentTime;
         logger.info("hashcode: " + hashCode);
-        ByteBuf resp = Unpooled.copiedBuffer((currentTime+":"+hashCode).getBytes());
+        ByteBuf resp = Unpooled.copiedBuffer(all.getBytes());
         ctx.writeAndFlush(resp);
+        logger.info("write done!!");
     }
 
     @Override
