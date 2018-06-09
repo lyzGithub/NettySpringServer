@@ -18,7 +18,9 @@ public class AgentApp {
 
     public static void main(String[] args) {
 
-        System.out.println("args: "+args);
+        for(int i = 0; i<args.length; i++){
+            System.out.println("args"+i+": "+args[i]);
+        }
         SpringApplication.run(AgentApp.class, args);
 
         String type = System.getProperty("type");
@@ -26,7 +28,7 @@ public class AgentApp {
         if ("consumer".equals(type)){
             logger.info("Start in Concumer !");
             try {
-                String  hostIp = IpHelper.getHostIp();
+                String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
                 HttpConsumerServer.main( hostIp, port);
