@@ -42,6 +42,8 @@ public class AgentApp {
             logger.info("Start in the provider!");
             try {
                 String  hostIp = IpHelper.getHostIp();
+                //String  hostIp = "127.0.0.1";
+
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
                 ClientToProvider clientToProvider = new ClientToProvider();

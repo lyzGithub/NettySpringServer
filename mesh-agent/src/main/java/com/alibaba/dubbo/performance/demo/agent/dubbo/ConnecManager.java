@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.dubbo;
 
+import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -36,7 +37,10 @@ public class ConnecManager {
             synchronized (lock){
                 if (null == channel){
                     int port = Integer.valueOf(System.getProperty("dubbo.protocol.port"));
-                    channel = bootstrap.connect("127.0.0.1", port).sync().channel();
+                    String host = IpHelper.getHostIp();
+                    //String host = "127.0.0.1";
+
+                    channel = bootstrap.connect(host, port).sync().channel();
                 }
             }
         }
