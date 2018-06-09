@@ -6,7 +6,7 @@ import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*import org.springframework.boot.SpringApplication;*/
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
@@ -22,7 +22,7 @@ public class AgentApp {
         for(int i = 0; i<args.length; i++){
             System.out.println("args"+i+": "+args[i]);
         }
-        //SpringApplication.run(AgentApp.class, args);
+        SpringApplication.run(AgentApp.class, args);
 
         String type = System.getProperty("type");
         logger.info("docker type" + type);
