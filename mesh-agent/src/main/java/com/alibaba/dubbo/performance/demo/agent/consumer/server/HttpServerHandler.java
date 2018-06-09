@@ -57,8 +57,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(request.content()));
             System.out.println("content: "+content.toString());
             ByteBuf contentBy = request.content();
-            String getString = contentBy.toString();
-            System.out.println("interface String: "+getJobType(request));
+            String getString = new String(contentBy.array());
+            System.out.println("interface String: "+getString);
         } else {
             // 不支持其它方法
             try {
@@ -71,7 +71,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private String getJobType(FullHttpRequest request){
         ByteBuf jsonBuf = request.content();
         String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
-        JSONObject jsonObj = JSONObject.parseObject(jsonStr);
+        JSONObject jsonObj = JSONObject.(jsonStr);
         String jobType = jsonObj.getString("interface");
         return jobType;
     }
