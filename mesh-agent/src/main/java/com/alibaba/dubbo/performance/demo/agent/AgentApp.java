@@ -22,7 +22,6 @@ public class AgentApp {
         for(int i = 0; i<args.length; i++){
             System.out.println("args"+i+": "+args[i]);
         }
-        SpringApplication.run(AgentApp.class, args);
 
         String type = System.getProperty("type");
         logger.info("docker type" + type);
@@ -40,6 +39,7 @@ public class AgentApp {
 
         else if ("provider".equals(type)){
             logger.info("Start in the provider!");
+            SpringApplication.run(AgentApp.class, args);
             try {
                 String  hostIp = IpHelper.getHostIp();
                 //String  hostIp = "127.0.0.1";
