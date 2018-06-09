@@ -20,10 +20,11 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * Created by carl.yu on 2016/12/16.
  */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+    private int count = 0;
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
-        //System.out.println("Http server receive request : " + order);
+        System.out.println("Http server receive request  " + ++count);
         handleRequest(fullHttpRequest);
 
         HttpResponse httpResponse=new DefaultHttpResponse(HTTP_1_1,OK);
