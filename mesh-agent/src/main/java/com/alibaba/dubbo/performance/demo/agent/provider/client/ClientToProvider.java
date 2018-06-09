@@ -13,6 +13,10 @@ public class ClientToProvider {
     private String parameterTypesStringTo = "Ljava/lang/String;";
     private String parameterTo = "";
 
+    public static void main(String args){
+        new ClientToProvider();
+    }
+
     public ClientToProvider(){
         parameterTo = "123475963rhehrehstnstnn";
         RunTest runTest = new RunTest();

@@ -46,7 +46,7 @@ public class AgentApp {
 
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
-                ClientToProvider clientToProvider = new ClientToProvider();
+                ClientToProvider.main("");
             } catch (Exception e) {
                 e.printStackTrace();
             }

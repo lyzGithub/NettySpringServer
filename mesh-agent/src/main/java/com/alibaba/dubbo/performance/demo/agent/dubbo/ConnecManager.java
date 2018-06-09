@@ -37,9 +37,8 @@ public class ConnecManager {
             synchronized (lock){
                 if (null == channel){
                     int port = Integer.valueOf(System.getProperty("dubbo.protocol.port"));
-                    String host = IpHelper.getHostIp();
-                    //String host = "127.0.0.1";
-
+                    //String host = IpHelper.getHostIp();
+                    String host = "127.0.0.1";
                     channel = bootstrap.connect(host, port).sync().channel();
                 }
             }
