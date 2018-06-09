@@ -5,7 +5,8 @@ import com.alibaba.dubbo.performance.demo.agent.provider.client.ClientToProvider
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
+
+/*import org.springframework.boot.SpringApplication;*/
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
@@ -21,12 +22,12 @@ public class AgentApp {
         for(int i = 0; i<args.length; i++){
             System.out.println("args"+i+": "+args[i]);
         }
-        SpringApplication.run(AgentApp.class, args);
+        //SpringApplication.run(AgentApp.class, args);
 
         String type = System.getProperty("type");
         logger.info("docker type" + type);
         if ("consumer".equals(type)){
-            logger.info("Start in Concumer !");
+            logger.info("Start in Concumer!");
             try {
                 String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
