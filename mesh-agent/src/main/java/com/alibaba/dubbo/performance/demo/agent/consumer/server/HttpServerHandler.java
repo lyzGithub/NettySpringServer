@@ -1,5 +1,7 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.fastjson.JSONObject;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -11,6 +13,8 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+
+import java.io.IOException;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -54,8 +58,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             System.out.println("content: "+content.toString());
             ByteBuf contentBy = request.content();
             String getString = contentBy.toString();
-            System.out.println("content String: "+content.toString());
-
+            System.out.println("interface String: "+getJobType(request));
         } else {
             // 不支持其它方法
             try {
@@ -64,6 +67,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 e.printStackTrace();
             }
         }
+    }
+    private String getJobType(FullHttpRequest request){
+        ByteBuf jsonBuf = request.content();
+        String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
+        JSONObject jsonObj = JSONObject.parseObject(jsonStr);
+        String jobType = jsonObj.getString("interface");
+        return jobType;
     }
 
     @Override
