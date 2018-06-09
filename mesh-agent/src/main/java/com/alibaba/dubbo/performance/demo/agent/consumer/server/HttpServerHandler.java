@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -50,7 +51,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         } else if (HttpMethod.POST == method) { // 是POST请求
             HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(request.content()));
-            System.out.println("content"+content.toString());
+            System.out.println("content: "+content.toString());
+            ByteBuf contentBy = request.content();
+            String getString = contentBy.toString();
+            System.out.println("content String: "+content.toString());
+
         } else {
             // 不支持其它方法
             try {
