@@ -24,7 +24,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
-        System.out.println("Http server receive request  " + ++count);
+        System.out.println("Http server receive request  " + fullHttpRequest);
+
         handleRequest(fullHttpRequest);
 
         HttpResponse httpResponse=new DefaultHttpResponse(HTTP_1_1,OK);
@@ -49,7 +50,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         } else if (HttpMethod.POST == method) { // 是POST请求
             HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(request.content()));
-            System.out.println(content.toString());
+            System.out.println("content"+content.toString());
         } else {
             // 不支持其它方法
             try {
