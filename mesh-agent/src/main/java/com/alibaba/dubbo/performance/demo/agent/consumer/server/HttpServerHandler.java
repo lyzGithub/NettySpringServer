@@ -71,7 +71,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private String getJobType(FullHttpRequest request){
         ByteBuf jsonBuf = request.content();
         String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
-        JSONObject jsonObj = JSONObject.(jsonStr);
+        JSONObject jsonObj = (JSONObject)JSONObject.parse(jsonStr);
         String jobType = jsonObj.getString("interface");
         return jobType;
     }
