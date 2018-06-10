@@ -40,14 +40,14 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
-        System.out.println("Http server receive request  " + fullHttpRequest);
+        /*System.out.println("Http server receive request  " + fullHttpRequest);
         System.out.println("VERSION: " + fullHttpRequest.getProtocolVersion().text() + "\r\n");
         System.out.println("REQUEST_URI: " + fullHttpRequest.getUri() + "\r\n\r\n");
         System.out.println("\r\n\r\n");
         for (Map.Entry<String, String> entry : fullHttpRequest.headers()) {
             System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
         }
-
+*/
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
         // 设置缓存大小
@@ -102,7 +102,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             Attribute data = (Attribute) parm;
             try {
                 parmMap.put(data.getName(), data.getValue());
-                System.out.println("para: "+data.getName()+": "+data.getValue());
+                //System.out.println("para: "+data.getName()+": "+data.getValue());
             } catch (IOException e) {
                 e.printStackTrace();
             }
