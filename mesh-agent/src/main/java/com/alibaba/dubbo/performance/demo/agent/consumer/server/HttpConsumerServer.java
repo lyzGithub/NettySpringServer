@@ -29,6 +29,7 @@ public class HttpConsumerServer {
                             socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
                             socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
                             socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler());
+
                         }
                     });
             ChannelFuture future = bootstrap.bind(host,port).sync();
