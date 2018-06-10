@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.consumer.server.common.FastJsonUtils;
 import com.alibaba.fastjson.JSONObject;
 
 import io.netty.buffer.ByteBuf;
@@ -70,7 +71,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private String getJobType(FullHttpRequest request){
         ByteBuf jsonBuf = request.content();
         String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
-        System.out.println("jsonStr:" + jsonStr);
+        JSONObject jsonObject = (JSONObject)FastJsonUtils.convertJSONToObject(jsonStr,JSONObject.class);
+        System.out.println("jsonStr:" + jsonObject.getString("interface"));
         return "";
     }
 
