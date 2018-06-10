@@ -1,5 +1,8 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.fastjson.JSONObject;
+
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -10,6 +13,8 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+
+import java.io.IOException;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -24,7 +29,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
-        System.out.println("Http server receive request  " + ++count);
+        System.out.println("Http server receive request  " + fullHttpRequest);
+
         handleRequest(fullHttpRequest);
 
         HttpResponse httpResponse=new DefaultHttpResponse(HTTP_1_1,OK);
@@ -49,7 +55,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         } else if (HttpMethod.POST == method) { // 是POST请求
             HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(request.content()));
-            System.out.println(content.toString());
+            System.out.println("content: "+content.toString());
+            ByteBuf contentBy = request.content();
+            System.out.println("interface String: "+getJobType(request));
         } else {
             // 不支持其它方法
             try {
@@ -58,6 +66,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 e.printStackTrace();
             }
         }
+    }
+    private String getJobType(FullHttpRequest request){
+        ByteBuf jsonBuf = request.content();
+        String jsonStr = jsonBuf.toString(CharsetUtil.UTF_8);
+        System.out.println("jsonStr:" + jsonStr);
+        return "";
     }
 
     @Override

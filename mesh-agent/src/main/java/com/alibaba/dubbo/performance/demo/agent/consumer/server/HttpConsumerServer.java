@@ -32,6 +32,7 @@ public class HttpConsumerServer {
 
                         }
                     });
+            System.out.println("服务器网址:"+host+":"+port);
             ChannelFuture future = bootstrap.bind(host,port).sync();
             System.out.println("服务器已启动>>网址:"+host+":"+port);
             future.channel().closeFuture().sync();

@@ -18,15 +18,17 @@ public class AgentApp {
     private static Logger logger = LoggerFactory.getLogger(AgentApp.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(AgentApp.class,args);
 
+        for(int i = 0; i<args.length; i++){
+            System.out.println("args"+i+": "+args[i]);
+        }
 
         String type = System.getProperty("type");
         logger.info("docker type" + type);
         if ("consumer".equals(type)){
-            logger.info("Start in Concumer !");
+            logger.info("Start in Concumer!");
             try {
-                String  hostIp = IpHelper.getHostIp();
+                String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
                 HttpConsumerServer.main( hostIp, port);
@@ -37,11 +39,14 @@ public class AgentApp {
 
         else if ("provider".equals(type)){
             logger.info("Start in the provider!");
+            SpringApplication.run(AgentApp.class, args);
             try {
                 String  hostIp = IpHelper.getHostIp();
+                //String  hostIp = "127.0.0.1";
+
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
-                ClientToProvider clientToProvider = new ClientToProvider();
+                ClientToProvider.main("");
             } catch (Exception e) {
                 e.printStackTrace();
             }
