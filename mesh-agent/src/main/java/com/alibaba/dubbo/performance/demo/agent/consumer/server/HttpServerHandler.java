@@ -10,12 +10,18 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.multipart.Attribute;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -31,6 +37,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
         System.out.println("Http server receive request  " + fullHttpRequest);
+        System.out.println("VERSION: " + fullHttpRequest.getProtocolVersion().text() + "\r\n");
+        System.out.println("REQUEST_URI: " + fullHttpRequest.getUri() + "\r\n\r\n");
+        System.out.println("\r\n\r\n");
+        for (Map.Entry<String, String> entry : fullHttpRequest.headers()) {
+            System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
+        }
 
         handleRequest(fullHttpRequest);
 
@@ -69,9 +81,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
     }
     private String getJobType(FullHttpRequest request){
-        ByteBuf jsonBuf = request.content();
-        String jsonStr = new String(jsonBuf.array());
-        System.out.println("jsonStr:" + jsonStr);
+        HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
+        decoder.offer(request);
+
+        List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
+
+        Map<String, String> parmMap = new HashMap<>();
+
+        for (InterfaceHttpData parm : parmList) {
+
+            Attribute data = (Attribute) parm;
+            try {
+                parmMap.put(data.getName(), data.getValue());
+                System.out.println("para: "+data.getName()+": "+data.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //ByteBuf jsonBuf = request.content();
+        //org.asynchttpclient.Request data = (org.asynchttpclient.Request)FastJsonUtils.convertJSONToObject("",org.asynchttpclient.Request.class);
         return "";
     }
 
