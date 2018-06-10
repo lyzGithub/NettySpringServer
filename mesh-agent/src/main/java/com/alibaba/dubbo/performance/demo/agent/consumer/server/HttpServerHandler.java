@@ -23,10 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
+
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 
 /**
  * Created by carl.yu on 2016/12/16.
@@ -44,10 +48,34 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
         }
 
-        handleRequest(fullHttpRequest);
 
-        HttpResponse httpResponse=new DefaultHttpResponse(HTTP_1_1,OK);
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
+        // 设置缓存大小
+//          ByteBuffer byteBuffer = new ByteBuffer();
+//          byteBuffer.size();
+//          byteBuffer.append("恭喜你,成功了!");
+
+        HttpMethod method = fullHttpRequest.method();
+        String hashCode = "";
+        if (HttpMethod.GET == method) {
+            // 是GET请求
+        } else if (HttpMethod.POST == method) { // 是POST请求
+            Map<String, String> paraMap = getParaMap(fullHttpRequest);
+            hashCode = Integer.toString(paraMap.get("parameter").hashCode());
+        } else {
+            // 不支持其它方法
+            try {
+                throw new Exception("除[GET|POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        byte[] hashBytes = hashCode.getBytes();
+        httpResponse.content().writeBytes(hashBytes);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
@@ -60,27 +88,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
     }
 
-    private void handleRequest(FullHttpRequest request) {
-        HttpMethod method = request.method();
 
-        if (HttpMethod.GET == method) {
-            // 是GET请求
-
-        } else if (HttpMethod.POST == method) { // 是POST请求
-            HttpContent content = new DefaultHttpContent(Unpooled.wrappedBuffer(request.content()));
-            System.out.println("content: "+content.toString());
-            ByteBuf contentBy = request.content();
-            System.out.println("interface String: "+getJobType(request));
-        } else {
-            // 不支持其它方法
-            try {
-                throw new Exception("除[GET|POST]外，不支持其它方法!!!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    private String getJobType(FullHttpRequest request){
+    private Map<String, String> getParaMap(FullHttpRequest request){
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
         decoder.offer(request);
 
@@ -98,9 +107,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 e.printStackTrace();
             }
         }
-        //ByteBuf jsonBuf = request.content();
-        //org.asynchttpclient.Request data = (org.asynchttpclient.Request)FastJsonUtils.convertJSONToObject("",org.asynchttpclient.Request.class);
-        return "";
+        return parmMap;
     }
 
     @Override
