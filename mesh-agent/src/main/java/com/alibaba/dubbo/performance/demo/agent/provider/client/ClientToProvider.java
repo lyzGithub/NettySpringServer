@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class ClientToProvider {
     private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
-    private RpcClient rpcClient = new RpcClient(registry);
+    private RpcClient rpcClient = new RpcClient();
     private static Logger logger = LoggerFactory.getLogger(ClientToProvider.class);
 
     private String interfaceTo = "com.alibaba.dubbo.performance.demo.provider.IHelloService";
