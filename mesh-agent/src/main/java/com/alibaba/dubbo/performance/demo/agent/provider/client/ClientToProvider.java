@@ -39,8 +39,7 @@ public class ClientToProvider {
             e.printStackTrace();
         }*/
 
-        //ProviderAgentRpcServer.run(hostIp, port );
-        ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
+        ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
         ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
         rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
         try {

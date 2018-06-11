@@ -42,7 +42,7 @@ public class AgentApp {
 
         else if ("provider".equals(type)){
             logger.info("Start in the provider!");
-            //SpringApplication.run(AgentApp.class, args);
+            SpringApplication.run(AgentApp.class, args);
             try {
                 String  hostIp = IpHelper.getHostIp();
                 //String  hostIp = "127.0.0.1";

@@ -87,7 +87,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         Endpoint endpoint = registeGetThread.getEndPoint();
 
         String hostIp = endpoint.getHost();
-        int port = endpoint.getPort();
+        int port = 1 + endpoint.getPort();
         System.out.println("in consumer, provider url:" + hostIp+":"+port);
         rpcClient = new ConsumerAgentRpcClient(hostIp,port);
         IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
