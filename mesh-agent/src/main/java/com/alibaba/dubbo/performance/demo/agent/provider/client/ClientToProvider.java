@@ -1,8 +1,10 @@
 package com.alibaba.dubbo.performance.demo.agent.provider.client;
 
+import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
+import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 
 public class ClientToProvider {
     private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
@@ -22,6 +24,16 @@ public class ClientToProvider {
         RunTest runTest = new RunTest();
         Thread t = new Thread(runTest);
         t.start();
+        int port = Integer.valueOf(System.getProperty("server.port"));
+        String hostIp = "127.0.0.1";
+        /*String hostIp = null;
+        try {
+            hostIp = IpHelper.getHostIp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+        ProviderAgentRpcServer.run(hostIp, Integer.valueOf(System.getProperty("server.port")) );
+
     }
 
 

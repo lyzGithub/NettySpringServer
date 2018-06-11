@@ -1,5 +1,7 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
+import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -16,9 +18,11 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
  * Created by carl.yu on 2016/12/16.
  */
 public class HttpConsumerServer {
+
     public void run(final String host,  final int port) throws Exception {
         EventLoopGroup bossGroup=new NioEventLoopGroup();
         EventLoopGroup workerGroup=new NioEventLoopGroup();
+        RegisteGetThread registeGetThread = new RegisteGetThread();
         try{
             ServerBootstrap bootstrap=new ServerBootstrap();
             bootstrap.group(bossGroup,workerGroup)
@@ -28,7 +32,7 @@ public class HttpConsumerServer {
                             socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
                             socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
                             socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
-                            socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler());
+                            socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(registeGetThread));
 
                         }
                     });
@@ -47,4 +51,5 @@ public class HttpConsumerServer {
     public static void main(String host, int port) throws Exception {
         new HttpConsumerServer().run(host,port);
     }
+
 }

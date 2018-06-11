@@ -15,29 +15,26 @@ import java.util.concurrent.TimeUnit;
  *
  * @author luxiaoxun
  */
-public class RpcClient {
+public class ConsumerAgentRpcClient {
 
     private String hostIp;
     private int port;
-    private IRegistry registry;
 
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(16, 16,
             600L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
 
-    public RpcClient(String hostIp, int port) {
+    public ConsumerAgentRpcClient(String hostIp, int port) {
         this.hostIp = hostIp;
         this.port = port;
-        registry = new EtcdRegistry(System.getProperty("etcd.url"));
     }
 
-    public RpcClient(String hostIp, int port, IRegistry registry ) {
+    /*public RpcClient(String hostIp, int port, IRegistry registry ) {
         if(registry == null){
             throw new NullPointerException("should init the IRegistry!");
         }
         this.hostIp = hostIp;
         this.port = port;
-        this.registry = registry;
-    }
+    }*/
 
     @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> interfaceClass) {

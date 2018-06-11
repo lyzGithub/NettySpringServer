@@ -1,6 +1,11 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient;
+import com.alibaba.dubbo.performance.demo.agent.agent.client.RPCFuture;
+import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
+import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.common.FastJsonUtils;
+import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import com.alibaba.fastjson.JSONObject;
 
 import io.netty.buffer.ByteBuf;
@@ -22,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -37,6 +43,11 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
  */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
+    private RegisteGetThread registeGetThread;
+    private  ConsumerAgentRpcClient rpcClient;
+    public HttpServerHandler(RegisteGetThread registeGetThread){
+        this.registeGetThread = registeGetThread;
+    }
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
 
@@ -57,10 +68,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         HttpMethod method = fullHttpRequest.method();
         String hashCode = "";
+        Map<String, String> paraMap = null;
         if (HttpMethod.GET == method) {
             // 是GET请求
         } else if (HttpMethod.POST == method) { // 是POST请求
-            Map<String, String> paraMap = getParaMap(fullHttpRequest);
+            paraMap = getParaMap(fullHttpRequest);
             hashCode = Integer.toString(paraMap.get("parameter").hashCode());
         } else {
             // 不支持其它方法
@@ -70,6 +82,20 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 e.printStackTrace();
             }
         }
+
+
+        Endpoint endpoint = registeGetThread.getEndPoint();
+
+        String hostIp = endpoint.getHost();
+        int port = endpoint.getPort();
+        System.out.println("in consumer, provider url:" + hostIp+":"+port);
+        ConsumerAgentRpcClient consumerAgentRpcClient = new ConsumerAgentRpcClient(hostIp, port);
+        rpcClient = new ConsumerAgentRpcClient(hostIp,port);
+        IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
+        RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
+        String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
+        System.out.println(result);
+
 
 
         byte[] hashBytes = hashCode.getBytes();
