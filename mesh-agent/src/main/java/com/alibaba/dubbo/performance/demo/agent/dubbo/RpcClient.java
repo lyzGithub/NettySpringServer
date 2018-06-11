@@ -56,7 +56,7 @@ public class RpcClient {
         }catch (Exception e){
             e.printStackTrace();
         }
-        logger.info("return requestId=" + request.getId() + new String((byte[])result));
+        //logger.info("return requestId=" + request.getId() + new String((byte[])result));
 
         return result;
     }

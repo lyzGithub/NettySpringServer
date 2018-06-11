@@ -130,9 +130,8 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
 
             ChannelFuture future = bootstrap.bind(host, port).sync();
             logger.info("Server started on port {}", port);
-
-
             future.channel().closeFuture().sync();
+            System.out.println("all exit!!!");
         }
     }
 

@@ -32,7 +32,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         ProviderAgentRpcServer.submit(new Runnable() {
             @Override
             public void run() {
-                logger.debug("Receive request " + request.getRequestId());
+                logger.info("Receive request " + request.getRequestId());
                 RpcResponse response = new RpcResponse();
                 response.setRequestId(request.getRequestId());
                 try {
@@ -45,7 +45,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
                 ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                        logger.debug("Send response for request " + request.getRequestId());
+                        logger.info("Send response for request " + request.getRequestId());
                     }
                 });
             }
@@ -61,13 +61,13 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         Class<?>[] parameterTypes = request.getParameterTypes();
         Object[] parameters = request.getParameters();
 
-        logger.debug(serviceClass.getName());
-        logger.debug(methodName);
+        logger.info(serviceClass.getName());
+        logger.info(methodName);
         for (int i = 0; i < parameterTypes.length; ++i) {
-            logger.debug(parameterTypes[i].getName());
+            logger.info(parameterTypes[i].getName());
         }
         for (int i = 0; i < parameters.length; ++i) {
-            logger.debug(parameters[i].toString());
+            logger.info(parameters[i].toString());
         }
 
         // JDK reflect
