@@ -79,7 +79,7 @@ public class ClientToProvider {
                     e.printStackTrace();
                 }
                 String resultString = new String((byte[]) result);
-                System.out.println("rpc client result: " + resultString);
+                //System.out.println("rpc client result: " + resultString);
             }
         }
     }

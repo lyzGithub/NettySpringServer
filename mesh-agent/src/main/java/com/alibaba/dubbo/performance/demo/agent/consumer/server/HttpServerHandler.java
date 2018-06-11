@@ -92,8 +92,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         rpcClient = new ConsumerAgentRpcClient(hostIp,port);
         IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
         RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
+        System.out.println("write finish!");
         String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
-        System.out.println(result);
+        System.out.println("get result: "+result);
 
 
 
