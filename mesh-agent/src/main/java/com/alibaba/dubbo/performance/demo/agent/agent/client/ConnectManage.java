@@ -164,7 +164,10 @@ public class ConnectManage {
             logger.info("go to connect!");
             ChannelFuture channelFuture = b.connect(remotePeer);
             logger.info("connected! " + channelFuture.isSuccess());
-            channelFuture.addListener(new ChannelFutureListener() {
+            RpcClientHandler handler = channelFuture.channel().pipeline().get(RpcClientHandler.class);
+            addHandler(handler);
+            listNew.remove(remotePeer);
+            /*channelFuture.addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(final ChannelFuture channelFuture) throws Exception {
                     if (channelFuture.isSuccess()) {
@@ -174,7 +177,7 @@ public class ConnectManage {
                         listNew.remove(remotePeer);
                     }
                 }
-            });
+            });*/
         }
     }
 
