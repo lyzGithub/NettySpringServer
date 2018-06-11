@@ -30,15 +30,11 @@ public class ClientToProvider {
         RunTest runTest = new RunTest();
         Thread t = new Thread(runTest);
         t.start();
+
+
+
         int port = Integer.valueOf(System.getProperty("server.port"));
         String hostIp = "127.0.0.1";
-        /*String hostIp = null;
-        try {
-            hostIp = IpHelper.getHostIp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-
         ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
         ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
         rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
