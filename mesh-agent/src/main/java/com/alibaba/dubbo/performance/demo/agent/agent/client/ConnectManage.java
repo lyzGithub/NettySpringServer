@@ -120,6 +120,9 @@ public class ConnectManage {
     }
 
     private void connectServerNode(final InetSocketAddress remotePeer) {
+        /*NewChannel newChannel = new NewChannel(remotePeer);
+        Thread t = new Thread(newChannel);
+        t.start();*/
         threadPoolExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -127,21 +130,52 @@ public class ConnectManage {
                 b.group(eventLoopGroup)
                         .channel(NioSocketChannel.class)
                         .handler(new RpcClientInitializer());
-
+                logger.info("go to connect!");
                 ChannelFuture channelFuture = b.connect(remotePeer);
+                logger.info("connected!");
+
                 channelFuture.addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(final ChannelFuture channelFuture) throws Exception {
                         if (channelFuture.isSuccess()) {
-                            logger.info("Successfully connect to remote server. remote peer = " + remotePeer);
+                            logger.debug("Successfully connect to remote server. remote peer = " + remotePeer);
                             RpcClientHandler handler = channelFuture.channel().pipeline().get(RpcClientHandler.class);
                             addHandler(handler);
-                            listNew.remove(remotePeer);
                         }
                     }
                 });
             }
         });
+    }
+
+    private class NewChannel implements Runnable{
+
+        private InetSocketAddress remotePeer;
+        public NewChannel(InetSocketAddress remotePeer){
+            this.remotePeer = remotePeer;
+        }
+
+        @Override
+        public void run() {
+            Bootstrap b = new Bootstrap();
+            b.group(eventLoopGroup)
+                    .channel(NioSocketChannel.class)
+                    .handler(new RpcClientInitializer());
+            logger.info("go to connect!");
+            ChannelFuture channelFuture = b.connect(remotePeer);
+            logger.info("connected!");
+            channelFuture.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(final ChannelFuture channelFuture) throws Exception {
+                    if (channelFuture.isSuccess()) {
+                        logger.info("Successfully connect to remote server. remote peer = " + remotePeer);
+                        RpcClientHandler handler = channelFuture.channel().pipeline().get(RpcClientHandler.class);
+                        addHandler(handler);
+                        listNew.remove(remotePeer);
+                    }
+                }
+            });
+        }
     }
 
     private void addHandler(RpcClientHandler handler) {
