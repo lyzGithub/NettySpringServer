@@ -40,6 +40,7 @@ public class AgentApp {
             try {
 
                 HttpConsumerServer.main("127.0.0.1", Integer.valueOf(System.getProperty("server.port")) );
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -52,8 +53,7 @@ public class AgentApp {
                 String  hostIp = IpHelper.getHostIp();
                 //String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
-                ClientToProvider clientToProvider = new ClientToProvider();
-
+                ClientToProvider.run();
             } catch (Exception e) {
                 e.printStackTrace();
             }
