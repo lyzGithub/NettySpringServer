@@ -50,14 +50,7 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public ProviderAgentRpcServer(String hostIp, int port, IRegistry registry) {
-        if(registry == null){
-            throw new NullPointerException("should init the IRegistry!");
-        }
-        this.hostIp = hostIp;
-        this.port = port;
-        this.registry = registry;
-    }
+
 
     public ProviderAgentRpcServer(String hostIp, int port) {
         this.hostIp = hostIp;

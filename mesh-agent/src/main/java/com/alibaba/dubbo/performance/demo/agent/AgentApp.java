@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 @SpringBootApplication
 public class AgentApp {
@@ -47,6 +49,8 @@ public class AgentApp {
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
                 ClientToProvider.run();
+                ApplicationContext ac = new FileSystemXmlApplicationContext("applicationContext.xml");
+                ProviderAgentRpcServer providerAgentRpcServer = (ProviderAgentRpcServer)ac.getBean("providerAgentRpcServer");
             } catch (Exception e) {
                 e.printStackTrace();
             }

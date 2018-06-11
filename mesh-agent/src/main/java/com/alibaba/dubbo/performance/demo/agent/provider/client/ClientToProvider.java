@@ -33,7 +33,7 @@ public class ClientToProvider {
             e.printStackTrace();
         }*/
 
-        ProviderAgentRpcServer.run(hostIp, port );
+        //ProviderAgentRpcServer.run(hostIp, port );
 
     }
 
