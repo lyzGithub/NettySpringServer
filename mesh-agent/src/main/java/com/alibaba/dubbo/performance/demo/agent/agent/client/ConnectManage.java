@@ -61,19 +61,19 @@ public class ConnectManage {
                 //update local serverNodes cache
                 HashSet<InetSocketAddress> newAllServerNodeSet = new HashSet<InetSocketAddress>();
                 for (int i = 0; i < endpoints.size(); ++i) {
-                        String host = endpoints.get(i).getHost();
-                        int port = endpoints.get(i).getPort()+1;
-                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    String host = endpoints.get(i).getHost();
+                    int port = endpoints.get(i).getPort()+1;
+                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     logger.info("server url:" + host+":"+port);
-                        final InetSocketAddress remotePeer = new InetSocketAddress(host, port);
-                        newAllServerNodeSet.add(remotePeer);
+                    final InetSocketAddress remotePeer = new InetSocketAddress(host, port);
+                    newAllServerNodeSet.add(remotePeer);
                 }
 
                 // Add new server node
                 for (final InetSocketAddress serverNodeAddress : newAllServerNodeSet) {
                     logger.info("new connect to provider server!");
                     if (!connectedServerNodes.keySet().contains(serverNodeAddress)) {
-                        logger.info("yes, go to new");
+                        logger.info("yes, go to new: " + serverNodeAddress);
                         connectServerNode(serverNodeAddress);
                     }
                 }
