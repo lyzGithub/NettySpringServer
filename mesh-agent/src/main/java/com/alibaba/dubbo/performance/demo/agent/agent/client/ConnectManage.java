@@ -67,14 +67,14 @@ public class ConnectManage {
                     String host = endpoints.get(i).getHost();
                     int port = endpoints.get(i).getPort()+1;
                     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    logger.info("server url:" + host+":"+port);
+                    //logger.info("server url:" + host+":"+port);
                     final InetSocketAddress remotePeer = new InetSocketAddress(host, port);
                     newAllServerNodeSet.add(remotePeer);
                 }
 
                 // Add new server node
                 for (final InetSocketAddress serverNodeAddress : newAllServerNodeSet) {
-                    logger.info("new connect to provider server!");
+                    //logger.info("new connect to provider server!");
                     if (!connectedServerNodes.keySet().contains(serverNodeAddress) && !listNew.containsKey(serverNodeAddress)) {
                         logger.info("yes, go to new: " + serverNodeAddress);
                         listNew.put(serverNodeAddress,serverNodeAddress);

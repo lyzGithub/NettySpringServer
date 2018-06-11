@@ -26,12 +26,10 @@ public class RegisteGetThread {
         t.start();
     }
     class RunGetETCD implements Runnable{
-
         @Override
         public void run() {
 
             while(true) {
-
                 synchronized (lock) {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
@@ -43,9 +41,8 @@ public class RegisteGetThread {
                     }
                 }
                 //System.out.println("endpoints.size()" + size);
-
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
