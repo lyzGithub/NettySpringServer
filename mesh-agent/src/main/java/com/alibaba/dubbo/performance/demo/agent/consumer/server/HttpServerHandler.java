@@ -73,7 +73,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             // 是GET请求
         } else if (HttpMethod.POST == method) { // 是POST请求
             paraMap = getParaMap(fullHttpRequest);
-            hashCode = Integer.toString(paraMap.get("parameter").hashCode());
+            //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
         } else {
             // 不支持其它方法
             try {
@@ -91,16 +91,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         System.out.println("write finish!");
         String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
         System.out.println("get result: "+result);
-
+        hashCode = result;
 
 
         byte[] hashBytes = hashCode.getBytes();
         httpResponse.content().writeBytes(hashBytes);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
-
-
-
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 

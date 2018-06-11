@@ -33,21 +33,7 @@ public class ClientToProvider {
 
 
 
-        int port = Integer.valueOf(System.getProperty("server.port"));
-        String hostIp = null;
-        try {
-            hostIp = IpHelper.getHostIp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
-        ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
-        rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
-        try {
-            rpcServer.start();
-        } catch (Exception ex) {
-            logger.error("Exception: {}", ex);
-        }
+
 
     }
 

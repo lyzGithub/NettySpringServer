@@ -50,10 +50,21 @@ public class AgentApp {
             logger.info("Start in the provider!");
             SpringApplication.run(AgentApp.class, args);
             try {
-                String  hostIp = IpHelper.getHostIp();
-                //String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
-                ClientToProvider.run();
+                String hostIp = null;
+                try {
+                    hostIp = IpHelper.getHostIp();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
+                ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
+                rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
+                try {
+                    rpcServer.start();
+                } catch (Exception ex) {
+                    logger.error("Exception: {}", ex);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
