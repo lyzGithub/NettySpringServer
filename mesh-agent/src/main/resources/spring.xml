@@ -1,4 +1,5 @@
 
+<!--
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,12 +13,13 @@
 
     <context:property-placeholder location="classpath:rpc.properties"/>
 
-    <!--<bean id="consumerAgentRpcClient" class="ccom.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient">
+    &lt;!&ndash;<bean id="consumerAgentRpcClient" class="ccom.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient">
         <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>
-    </bean>-->
+    </bean>&ndash;&gt;
     <bean id="providerAgentRpcServer" class="com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer">
         <constructor-arg name="hostIp" value="127.0.0.1"/>
         <constructor-arg name="serviceRegistry" value="${server.port}"/>
     </bean>
 
 </beans>
+-->

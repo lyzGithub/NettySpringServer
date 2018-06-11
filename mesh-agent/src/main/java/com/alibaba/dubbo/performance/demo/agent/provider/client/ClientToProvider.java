@@ -1,14 +1,20 @@
 package com.alibaba.dubbo.performance.demo.agent.provider.client;
 
+import com.alibaba.dubbo.performance.demo.agent.AgentApp;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer;
+import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
+import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentServiceImpl;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientToProvider {
     private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
     private RpcClient rpcClient = new RpcClient(registry);
+    private static Logger logger = LoggerFactory.getLogger(ClientToProvider.class);
 
     private String interfaceTo = "com.alibaba.dubbo.performance.demo.provider.IHelloService";
     private String methodTo = "hash";
@@ -34,6 +40,14 @@ public class ClientToProvider {
         }*/
 
         //ProviderAgentRpcServer.run(hostIp, port );
+        ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
+        ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
+        rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
+        try {
+            rpcServer.start();
+        } catch (Exception ex) {
+            logger.error("Exception: {}", ex);
+        }
 
     }
 
