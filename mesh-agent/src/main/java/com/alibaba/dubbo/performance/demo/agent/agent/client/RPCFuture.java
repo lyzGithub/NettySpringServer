@@ -115,7 +115,7 @@ public class RPCFuture implements Future<Object> {
 
     private void runCallback(final AsyncRPCCallback callback) {
         final RpcResponse res = this.response;
-        RpcClient.submit(new Runnable() {
+        ConsumerAgentRpcClient.submit(new Runnable() {
             @Override
             public void run() {
                 if (!res.isError()) {
