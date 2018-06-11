@@ -22,14 +22,14 @@ public class RegisteGetThread {
 
     public Endpoint getEndPoint(){
 
-        int temp = random.nextInt(size);
         Endpoint endpoint;
         synchronized (lock) {
+            int temp = random.nextInt(size);
+            System.out.println("endpoint size: "+size);
             endpoint = endpoints.get(temp);
         }
         //String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
         return endpoint;
-
     }
 
 
@@ -44,11 +44,11 @@ public class RegisteGetThread {
                 synchronized (lock) {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
+                        size = endpoints.size();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                size = endpoints.size();
                 //System.out.println("endpoints.size()" + size);
 
                 try {
