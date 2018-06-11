@@ -1,5 +1,4 @@
 package com.alibaba.dubbo.performance.demo.agent;
-
 import com.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.RPCFuture;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
@@ -19,8 +18,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.util.concurrent.TimeUnit;
 
-@SpringBootApplication
-public class AgentApp {
+public class AgentApp2 {
     // agent会作为sidecar，部署在每一个Provider和Consumer机器上
     // 在Provider端启动agent时，添加JVM参数-Dtype=provider -Dserver.port=30000 -Ddubbo.protocol.port=20889
     // 在Consumer端启动agent时，添加JVM参数-Dtype=consumer -Dserver.port=20000
@@ -29,20 +27,10 @@ public class AgentApp {
 
     public static void main(String[] args) {
 
-        for(int i = 0; i<args.length; i++){
-            System.out.println("args"+i+": "+args[i]);
-        }
 
-        String type = System.getProperty("type");
-        logger.info("docker type" + type);
-        if ("consumer".equals(type)){
             logger.info("Start in Concumer!");
             try {
                 String  hostIp = "127.0.0.1";
-                int port = Integer.valueOf(System.getProperty("server.port"));
-                System.out.println("address is: " + hostIp + ":" + port);
-
-
                 ConsumerAgentRpcClient rpcClient = new ConsumerAgentRpcClient(hostIp,30001);
                 IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
                 System.out.println("write: "+"hello");
@@ -56,30 +44,8 @@ public class AgentApp {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
 
-        else if ("provider".equals(type)){
-            logger.info("Start in the provider!");
-            SpringApplication.run(AgentApp.class, args);
-            try {
-                String  hostIp = IpHelper.getHostIp();
-                //String  hostIp = "127.0.0.1";
-                int port = Integer.valueOf(System.getProperty("server.port"));
-                System.out.println("address is: " + hostIp + ":" + port);
-                ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
-                ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
-                rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
-                try {
-                    rpcServer.start();
-                } catch (Exception ex) {
-                    logger.error("Exception: {}", ex);
-                }
-                //ClientToProvider.run();
-                /*ApplicationContext ac = new FileSystemXmlApplicationContext("spring.xml");
-                ProviderAgentRpcServer providerAgentRpcServer = (ProviderAgentRpcServer)ac.getBean("providerAgentRpcServer");*/
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
+
     }
 }

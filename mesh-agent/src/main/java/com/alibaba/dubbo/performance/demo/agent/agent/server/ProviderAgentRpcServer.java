@@ -55,7 +55,7 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
     public ProviderAgentRpcServer(String hostIp, int port) {
         this.hostIp = hostIp;
         this.port = port;
-        registry = new EtcdRegistry(System.getProperty("etcd.url"));
+        //registry = new EtcdRegistry(System.getProperty("etcd.url"));
     }
 
     @Override
