@@ -15,7 +15,7 @@ public class ClientToProvider {
     private String parameterTypesStringTo = "Ljava/lang/String;";
     private String parameterTo = "";
 
-    public static void main(String args){
+    public static void run(){
         new ClientToProvider();
     }
 
@@ -32,7 +32,8 @@ public class ClientToProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        ProviderAgentRpcServer.run(hostIp, Integer.valueOf(System.getProperty("server.port")) );
+
+        ProviderAgentRpcServer.run(hostIp, port );
 
     }
 

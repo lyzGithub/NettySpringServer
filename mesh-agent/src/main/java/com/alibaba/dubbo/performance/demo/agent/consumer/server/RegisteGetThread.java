@@ -49,7 +49,7 @@ public class RegisteGetThread {
                     }
                 }
                 size = endpoints.size();
-                System.out.println("endpoints.size()" + size);
+                //System.out.println("endpoints.size()" + size);
 
                 try {
                     Thread.sleep(500);

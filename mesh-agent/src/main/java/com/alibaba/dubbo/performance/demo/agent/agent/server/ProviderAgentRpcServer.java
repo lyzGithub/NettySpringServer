@@ -113,6 +113,7 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
     }
 
     public void start() throws Exception {
+        System.out.println("In ProviderAgentRpcServer start");
         if (bossGroup == null && workerGroup == null) {
             bossGroup = new NioEventLoopGroup();
             workerGroup = new NioEventLoopGroup();

@@ -2,6 +2,7 @@ package com.alibaba.dubbo.performance.demo.agent;
 
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer;
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.HttpConsumerServer;
+import com.alibaba.dubbo.performance.demo.agent.provider.client.ClientToProvider;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class AgentApp {
                 //String  hostIp = "127.0.0.1";
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
-                ProviderAgentRpcServer.run(hostIp,port);
+                ClientToProvider.run();
             } catch (Exception e) {
                 e.printStackTrace();
             }
