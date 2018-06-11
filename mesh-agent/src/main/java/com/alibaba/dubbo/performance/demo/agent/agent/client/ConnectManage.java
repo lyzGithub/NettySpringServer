@@ -163,7 +163,7 @@ public class ConnectManage {
                     .handler(new RpcClientInitializer());
             logger.info("go to connect!");
             ChannelFuture channelFuture = b.connect(remotePeer);
-            logger.info("connected!");
+            logger.info("connected! " + channelFuture.isSuccess());
             channelFuture.addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(final ChannelFuture channelFuture) throws Exception {
