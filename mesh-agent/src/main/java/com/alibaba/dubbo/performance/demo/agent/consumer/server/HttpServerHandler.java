@@ -86,9 +86,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         rpcClient = new ConsumerAgentRpcClient();
         IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
-        System.out.println("write: "+paraMap.get("parameter"));
-        RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
-        System.out.println("write finish!");
+        //System.out.println("write: "+paraMap.get("parameter"));
+        RPCFuture helloFuture = client.call("getHashCode", paraMap.get("parameter"));
+        //System.out.println("write finish!");
         String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
         System.out.println("get result: "+result);
         hashCode = result;

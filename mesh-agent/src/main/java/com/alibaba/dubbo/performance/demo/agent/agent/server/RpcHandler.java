@@ -32,7 +32,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         ProviderAgentRpcServer.submit(new Runnable() {
             @Override
             public void run() {
-                logger.info("Receive request " + request.getRequestId());
+                //logger.info("Receive request " + request.getRequestId());
                 RpcResponse response = new RpcResponse();
                 response.setRequestId(request.getRequestId());
                 try {
@@ -45,7 +45,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
                 ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                        logger.info("Send response for request " + request.getRequestId());
+                        //logger.info("Send response for request " + request.getRequestId());
                     }
                 });
             }
@@ -61,7 +61,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         Class<?>[] parameterTypes = request.getParameterTypes();
         Object[] parameters = request.getParameters();
 
-        logger.info(serviceClass.getName());
+        /*logger.info(serviceClass.getName());
         logger.info(methodName);
         for (int i = 0; i < parameterTypes.length; ++i) {
             logger.info(parameterTypes[i].getName());
@@ -69,7 +69,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
         for (int i = 0; i < parameters.length; ++i) {
             logger.info(parameters[i].toString());
         }
-
+*/
         // JDK reflect
         /*Method method = serviceClass.getMethod(methodName, parameterTypes);
         method.setAccessible(true);
