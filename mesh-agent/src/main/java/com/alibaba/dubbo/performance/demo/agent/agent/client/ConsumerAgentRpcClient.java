@@ -17,16 +17,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConsumerAgentRpcClient {
 
-    private String hostIp;
-    private int port;
-
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(16, 16,
             600L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
 
-    public ConsumerAgentRpcClient(String hostIp, int port) {
-        this.hostIp = hostIp;
-        this.port = port;
-    }
+
 
     /*public RpcClient(String hostIp, int port, IRegistry registry ) {
         if(registry == null){

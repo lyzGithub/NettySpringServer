@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.agent.client.ConnectManage;
 import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
@@ -19,21 +20,6 @@ public class RegisteGetThread {
         Thread t = new Thread(runGetETCD);
         t.start();
     }
-
-    public Endpoint getEndPoint(){
-
-        Endpoint endpoint;
-        synchronized (lock) {
-            int temp = random.nextInt(size);
-            System.out.println("endpoint size: "+size);
-            endpoint = endpoints.get(temp);
-        }
-        //String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
-        return endpoint;
-    }
-
-
-
     class RunGetETCD implements Runnable{
 
         @Override
@@ -45,6 +31,8 @@ public class RegisteGetThread {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
                         size = endpoints.size();
+                        ConnectManage.getInstance().updateConnectedServer( endpoints);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

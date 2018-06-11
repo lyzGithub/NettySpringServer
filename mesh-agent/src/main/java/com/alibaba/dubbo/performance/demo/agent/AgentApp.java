@@ -38,19 +38,13 @@ public class AgentApp {
         if ("consumer".equals(type)){
             logger.info("Start in Concumer!");
             try {
-                String  hostIp = "127.0.0.1";
-                int port = Integer.valueOf(System.getProperty("server.port"));
-                System.out.println("address is: " + hostIp + ":" + port);
-
-
-                ConsumerAgentRpcClient rpcClient = new ConsumerAgentRpcClient(hostIp,30001);
+                ConsumerAgentRpcClient rpcClient = new ConsumerAgentRpcClient();
                 IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
                 System.out.println("write: "+"hello");
                 RPCFuture helloFuture = client.call("hello", "hello");
                 System.out.println("write finish!");
                 String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
                 System.out.println("get result: "+result);
-
 
                 //HttpConsumerServer.main( hostIp, port);
             } catch (Exception e) {
