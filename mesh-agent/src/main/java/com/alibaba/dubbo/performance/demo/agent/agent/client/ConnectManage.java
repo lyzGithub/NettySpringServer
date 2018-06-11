@@ -64,13 +64,16 @@ public class ConnectManage {
                         String host = endpoints.get(i).getHost();
                         int port = endpoints.get(i).getPort()+1;
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    logger.info("server url:" + host+":"+port);
                         final InetSocketAddress remotePeer = new InetSocketAddress(host, port);
                         newAllServerNodeSet.add(remotePeer);
                 }
 
                 // Add new server node
                 for (final InetSocketAddress serverNodeAddress : newAllServerNodeSet) {
+                    logger.info("new connect to provider server!");
                     if (!connectedServerNodes.keySet().contains(serverNodeAddress)) {
+                        logger.info("yes, go to new");
                         connectServerNode(serverNodeAddress);
                     }
                 }
@@ -125,7 +128,7 @@ public class ConnectManage {
                     @Override
                     public void operationComplete(final ChannelFuture channelFuture) throws Exception {
                         if (channelFuture.isSuccess()) {
-                            logger.debug("Successfully connect to remote server. remote peer = " + remotePeer);
+                            logger.info("Successfully connect to remote server. remote peer = " + remotePeer);
                             RpcClientHandler handler = channelFuture.channel().pipeline().get(RpcClientHandler.class);
                             addHandler(handler);
                         }
