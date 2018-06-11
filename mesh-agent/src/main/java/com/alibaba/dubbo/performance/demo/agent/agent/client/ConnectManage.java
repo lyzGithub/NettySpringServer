@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ public class ConnectManage {
 
     private CopyOnWriteArrayList<RpcClientHandler> connectedHandlers = new CopyOnWriteArrayList<>();
     private Map<InetSocketAddress, RpcClientHandler> connectedServerNodes = new ConcurrentHashMap<>();
+
+    private Map<InetSocketAddress,InetSocketAddress> listNew = new ConcurrentHashMap<>();
 
     private ReentrantLock lock = new ReentrantLock();
     private Condition connected = lock.newCondition();
@@ -72,9 +75,11 @@ public class ConnectManage {
                 // Add new server node
                 for (final InetSocketAddress serverNodeAddress : newAllServerNodeSet) {
                     logger.info("new connect to provider server!");
-                    if (!connectedServerNodes.keySet().contains(serverNodeAddress)) {
+                    if (!connectedServerNodes.keySet().contains(serverNodeAddress) && !listNew.containsKey(serverNodeAddress)) {
                         logger.info("yes, go to new: " + serverNodeAddress);
+                        listNew.put(serverNodeAddress,serverNodeAddress);
                         connectServerNode(serverNodeAddress);
+
                     }
                 }
 
@@ -131,6 +136,7 @@ public class ConnectManage {
                             logger.info("Successfully connect to remote server. remote peer = " + remotePeer);
                             RpcClientHandler handler = channelFuture.channel().pipeline().get(RpcClientHandler.class);
                             addHandler(handler);
+                            listNew.remove(remotePeer);
                         }
                     }
                 });
