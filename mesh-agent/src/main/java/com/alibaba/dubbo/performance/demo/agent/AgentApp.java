@@ -49,8 +49,8 @@ public class AgentApp {
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 System.out.println("address is: " + hostIp + ":" + port);
                 ClientToProvider.run();
-                ApplicationContext ac = new FileSystemXmlApplicationContext("spring.xml");
-                ProviderAgentRpcServer providerAgentRpcServer = (ProviderAgentRpcServer)ac.getBean("providerAgentRpcServer");
+                /*ApplicationContext ac = new FileSystemXmlApplicationContext("spring.xml");
+                ProviderAgentRpcServer providerAgentRpcServer = (ProviderAgentRpcServer)ac.getBean("providerAgentRpcServer");*/
             } catch (Exception e) {
                 e.printStackTrace();
             }
