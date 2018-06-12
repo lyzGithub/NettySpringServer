@@ -1,23 +1,15 @@
 package com.alibaba.dubbo.performance.demo.agent;
 
-import com.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient;
-import com.alibaba.dubbo.performance.demo.agent.agent.client.RPCFuture;
-import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentServiceImpl;
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.HttpConsumerServer;
-import com.alibaba.dubbo.performance.demo.agent.provider.client.ClientToProvider;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 public class AgentApp {

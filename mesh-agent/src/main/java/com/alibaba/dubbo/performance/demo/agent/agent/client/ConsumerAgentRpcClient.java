@@ -2,8 +2,6 @@ package com.alibaba.dubbo.performance.demo.agent.agent.client;
 
 import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.ObjectProxy;
-import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
-import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 
 import java.lang.reflect.Proxy;
 import java.util.concurrent.ArrayBlockingQueue;

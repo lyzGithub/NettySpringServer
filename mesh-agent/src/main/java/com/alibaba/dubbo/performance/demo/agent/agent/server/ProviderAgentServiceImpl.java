@@ -2,7 +2,6 @@ package com.alibaba.dubbo.performance.demo.agent.agent.server;
 
 import com.alibaba.dubbo.performance.demo.agent.agent.RequestPara;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
-import com.alibaba.dubbo.performance.demo.agent.provider.client.ClientToProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,7 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
 
     @Override
     public String getHashCode(RequestPara requestPara) {
-        ClientToProvider.run();
+
         /*Object result = null;
         try {
             result = rpcClient.invoke(requestPara.getInterfaceName(),requestPara.getMethodName(),requestPara.getParameterTypesString()
