@@ -29,7 +29,7 @@ public class HelloController {
     private List<Endpoint> endpoints = null;
     private Object lock = new Object();
     private OkHttpClient httpClient = new OkHttpClient();
-
+    private RegisteGetThread getThread = new RegisteGetThread();
 
     @RequestMapping(value = "")
     public Object invoke(@RequestParam("interface") String interfaceName,
@@ -56,7 +56,7 @@ public class HelloController {
 
     public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
         //System.out.println("provider: "+interfaceName+":"+method +":" + parameterTypesString +":"+ parameter);
-        synchronized (lock){
+        /*synchronized (lock){
                 endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
         }
         int size = 0;
@@ -65,8 +65,12 @@ public class HelloController {
         int temp = random.nextInt(size);
         // 简单的负载均衡，随机取一个
         Endpoint endpoint = endpoints.get(temp);
+        */
 
+        Endpoint endpoint = getThread.getEndpoint();
         String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
+
+
         RequestBody requestBody = new FormBody.Builder()
                 .add("interface",interfaceName)
                 .add("method",method)
