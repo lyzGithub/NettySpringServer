@@ -5,12 +5,13 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 
 public class TestRPCClient {
-    RpcClient rpcClient = new RpcClient();
+    RpcClient rpcClient ;
     Random r = new Random(1);
     private long dulationTimeMill = 30000;
 
     private long count= 0;
-    public TestRPCClient(){
+    public TestRPCClient(RpcClient rpcClient){
+        this.rpcClient = rpcClient;
         int getNum = 500;
         RunGetETCD[] rS = new RunGetETCD[getNum];
         for(int i = 0; i< getNum; i++) {

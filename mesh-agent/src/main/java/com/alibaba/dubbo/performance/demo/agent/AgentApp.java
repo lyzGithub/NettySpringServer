@@ -47,9 +47,7 @@ public class AgentApp {
                 ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
 
-                //test dubbo
-                //Thread.sleep(500);
-                //TestRPCClient testRPCClient = new TestRPCClient();
+
                 try {
                     rpcServer.start();
                 } catch (Exception ex) {

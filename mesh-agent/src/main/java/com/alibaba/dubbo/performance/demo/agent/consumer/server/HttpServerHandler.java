@@ -99,7 +99,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
 
 
-        String result = (String) helloFuture.get(20000, TimeUnit.MILLISECONDS);
+        String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
         hashCode = result;
 
         //hashCode = Integer.toString(paraMap.get("parameter").hashCode());

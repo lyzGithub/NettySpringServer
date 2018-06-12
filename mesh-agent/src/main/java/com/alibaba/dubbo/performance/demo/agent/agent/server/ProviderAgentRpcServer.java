@@ -4,6 +4,7 @@ import com.alibaba.dubbo.performance.demo.agent.agent.protocol.RpcDecoder;
 import com.alibaba.dubbo.performance.demo.agent.agent.protocol.RpcEncoder;
 import com.alibaba.dubbo.performance.demo.agent.agent.protocol.RpcRequest;
 import com.alibaba.dubbo.performance.demo.agent.agent.protocol.RpcResponse;
+import com.alibaba.dubbo.performance.demo.agent.dubbo.TestRPCClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import io.netty.bootstrap.ServerBootstrap;
@@ -49,7 +50,6 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
 
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
-
 
 
     public ProviderAgentRpcServer(String hostIp, int port) {
