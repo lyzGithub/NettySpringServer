@@ -22,7 +22,7 @@ public class AgentApp {
     public static void main(String[] args) {
 
         String type = System.getProperty("type");
-        logger.info("docker type" + type);
+        logger.info("docker type: " + type);
         if ("consumer".equals(type)){
             logger.info("Start in Concumer!");
             try {
@@ -33,7 +33,7 @@ public class AgentApp {
         }
         else if ("provider".equals(type)){
             logger.info("Start in the provider!");
-            SpringApplication.run(AgentApp.class, args);
+            //SpringApplication.run(AgentApp.class, args);
             try {
                 int port = Integer.valueOf(System.getProperty("server.port"));
                 String hostIp = null;
