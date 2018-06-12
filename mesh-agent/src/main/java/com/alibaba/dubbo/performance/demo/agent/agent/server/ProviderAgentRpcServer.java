@@ -56,6 +56,11 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
         this.hostIp = hostIp;
         this.port = port;
         registry = new EtcdRegistry(System.getProperty("etcd.url"));
+        try {
+            this.start();
+        } catch (Exception ex) {
+            logger.error("Exception: {}", ex);
+        }
     }
 
     @Override
@@ -101,11 +106,10 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
             logger.info("Loading service: {}", interfaceName);
             handlerMap.put(interfaceName, serviceBean);
         }
-
         return this;
     }
 
-    public void start() throws Exception {
+    private void start() throws Exception {
         logger.info("In ProviderAgentRpcServer start");
         if (bossGroup == null && workerGroup == null) {
             bossGroup = new NioEventLoopGroup();
@@ -131,7 +135,6 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
             ChannelFuture future = bootstrap.bind(host, port).sync();
             logger.info("Server started on port {}", port);
             future.channel().closeFuture().sync();
-            logger.info("all exit!!!");
         }
     }
 

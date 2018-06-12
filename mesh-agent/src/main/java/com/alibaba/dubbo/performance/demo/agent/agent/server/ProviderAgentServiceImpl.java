@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProviderAgentServiceImpl implements ProviderAgentService{
 
-    private RpcClient rpcClient = new RpcClient();
+    //private RpcClient rpcClient = new RpcClient();
     private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
     public ProviderAgentServiceImpl(){

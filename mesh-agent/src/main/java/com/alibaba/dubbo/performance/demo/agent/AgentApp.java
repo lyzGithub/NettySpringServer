@@ -47,12 +47,8 @@ public class AgentApp {
                 ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
                 ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
-                try {
-                    rpcServer.start();
-                    TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
-                } catch (Exception ex) {
-                    logger.error("Exception: {}", ex);
-                }
+                TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
