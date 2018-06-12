@@ -42,7 +42,7 @@ public class AgentApp {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port+1);
+                ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
                 ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
                 try {

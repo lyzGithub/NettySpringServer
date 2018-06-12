@@ -65,7 +65,7 @@ public class ConnectManage {
                 HashSet<InetSocketAddress> newAllServerNodeSet = new HashSet<InetSocketAddress>();
                 for (int i = 0; i < endpoints.size(); ++i) {
                     String host = endpoints.get(i).getHost();
-                    int port = endpoints.get(i).getPort()+1;
+                    int port = endpoints.get(i).getPort();
                     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     //logger.info("server url:" + host+":"+port);
                     final InetSocketAddress remotePeer = new InetSocketAddress(host, port);
