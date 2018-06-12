@@ -14,7 +14,6 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
     private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
     public ProviderAgentServiceImpl(){
-        TestRPCClient testRPCClient = new TestRPCClient(rpcClient);
     }
 
     @Override
