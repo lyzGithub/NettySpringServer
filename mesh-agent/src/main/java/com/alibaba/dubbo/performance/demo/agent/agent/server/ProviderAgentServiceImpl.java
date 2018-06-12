@@ -11,7 +11,7 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
     public ProviderAgentServiceImpl(){
         //System.out.println("hh "+this.getClass().toString());
     }
-    private RpcClient rpcClient = new RpcClient();
+    //private RpcClient rpcClient = new RpcClient();
     private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
     @Override
