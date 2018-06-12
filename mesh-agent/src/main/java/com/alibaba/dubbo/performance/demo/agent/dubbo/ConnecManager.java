@@ -1,6 +1,5 @@
 package com.alibaba.dubbo.performance.demo.agent.dubbo;
 
-import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
