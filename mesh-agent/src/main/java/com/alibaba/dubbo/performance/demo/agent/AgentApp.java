@@ -50,7 +50,7 @@ public class AgentApp {
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
                 System.out.println("add service done! ");
 
-                //TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
+                TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
 
             } catch (Exception e) {
                 e.printStackTrace();
