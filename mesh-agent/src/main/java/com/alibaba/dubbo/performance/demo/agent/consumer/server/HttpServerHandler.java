@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.agent.RequestPara;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcClient;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.RPCFuture;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
@@ -31,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -45,6 +48,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private int count = 0;
     private RegisteGetThread registeGetThread;
     private  ConsumerAgentRpcClient rpcClient;
+    private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
+
     public HttpServerHandler(RegisteGetThread registeGetThread){
         this.registeGetThread = registeGetThread;
     }
@@ -87,10 +92,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         rpcClient = new ConsumerAgentRpcClient();
         IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
         //System.out.println("write: "+paraMap.get("parameter"));
-        RPCFuture helloFuture = client.call("getHashCode", paraMap.get("parameter"));
+        RPCFuture helloFuture = client.call("getHashCode",
+                new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
+                        paraMap.get("parameter")));
         //System.out.println("write finish!");
         String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
-        System.out.println("get result: "+result);
+        logger.info("get result: "+result);
         hashCode = result;
 
 

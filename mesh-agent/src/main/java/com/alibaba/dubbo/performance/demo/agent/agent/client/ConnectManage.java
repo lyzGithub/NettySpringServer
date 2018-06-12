@@ -130,9 +130,9 @@ public class ConnectManage {
                 b.group(eventLoopGroup)
                         .channel(NioSocketChannel.class)
                         .handler(new RpcClientInitializer());
-                logger.info("go to connect!");
+                //logger.info("go to connect!");
                 ChannelFuture channelFuture = b.connect(remotePeer);
-                logger.info("connected!");
+                //logger.info("connected!");
 
                 channelFuture.addListener(new ChannelFutureListener() {
                     @Override

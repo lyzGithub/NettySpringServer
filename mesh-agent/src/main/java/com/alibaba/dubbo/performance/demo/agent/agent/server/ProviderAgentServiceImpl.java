@@ -3,6 +3,8 @@ package com.alibaba.dubbo.performance.demo.agent.agent.server;
 import com.alibaba.dubbo.performance.demo.agent.agent.RequestPara;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.provider.client.ClientToProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RpcService(ProviderAgentServiceImpl.class)
 
@@ -11,10 +13,11 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
         System.out.println("hh "+this.getClass().toString());
     }
     private RpcClient rpcClient = new RpcClient();
+    private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
     @Override
     public String hello(String para) {
-        System.out.println("receive: " + para);
+        logger.info("receive: " + para);
         return "hello " + para;
     }
 
@@ -29,7 +32,7 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
             e.printStackTrace();
         }
         String hashCode = new String((byte[]) result);
-        System.out.println(hashCode);
+        logger.info(hashCode);
         return hashCode;
     }
 
