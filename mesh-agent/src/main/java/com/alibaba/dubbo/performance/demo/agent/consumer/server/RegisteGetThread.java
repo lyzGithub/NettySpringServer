@@ -34,7 +34,7 @@ public class RegisteGetThread {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
                         size = endpoints.size();
-                        logger.info("endpoint size: " + size);
+                        //logger.info("endpoint size: " + size);
                         ConnectManage.getInstance().updateConnectedServer( endpoints);
                     } catch (Exception e) {
                         e.printStackTrace();
