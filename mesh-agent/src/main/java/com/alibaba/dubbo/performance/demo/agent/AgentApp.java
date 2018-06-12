@@ -21,23 +21,16 @@ public class AgentApp {
 
     public static void main(String[] args) {
 
-        for(int i = 0; i<args.length; i++){
-            System.out.println("args"+i+": "+args[i]);
-        }
-
         String type = System.getProperty("type");
         logger.info("docker type" + type);
         if ("consumer".equals(type)){
             logger.info("Start in Concumer!");
             try {
-
                 HttpConsumerServer.main("127.0.0.1", Integer.valueOf(System.getProperty("server.port")) );
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         else if ("provider".equals(type)){
             logger.info("Start in the provider!");
             SpringApplication.run(AgentApp.class, args);
