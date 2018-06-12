@@ -56,11 +56,9 @@ public class HelloController {
 
     public Integer consumer(String interfaceName,String method,String parameterTypesString,String parameter) throws Exception {
         //System.out.println("provider: "+interfaceName+":"+method +":" + parameterTypesString +":"+ parameter);
-
         synchronized (lock){
                 endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
         }
-
         int size = 0;
         size = endpoints.size();
         System.out.println("endpoints.size()" + size);
@@ -69,7 +67,6 @@ public class HelloController {
         Endpoint endpoint = endpoints.get(temp);
 
         String url =  "http://" + endpoint.getHost() + ":" + endpoint.getPort();
-        System.out.println("url: "+url + "endpoints.size(): " + size + "random.nextInt(endpoints.size()): "+temp);
         RequestBody requestBody = new FormBody.Builder()
                 .add("interface",interfaceName)
                 .add("method",method)
