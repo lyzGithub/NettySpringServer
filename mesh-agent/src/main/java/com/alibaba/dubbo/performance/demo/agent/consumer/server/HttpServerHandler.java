@@ -5,11 +5,7 @@ import com.alibaba.dubbo.performance.demo.agent.agent.client.ConsumerAgentRpcCli
 import com.alibaba.dubbo.performance.demo.agent.agent.client.RPCFuture;
 import com.alibaba.dubbo.performance.demo.agent.agent.client.proxy.IAsyncObjectProxy;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
-import com.alibaba.dubbo.performance.demo.agent.consumer.server.common.FastJsonUtils;
-import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
-import com.alibaba.fastjson.JSONObject;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -47,7 +43,8 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
     private RegisteGetThread registeGetThread;
-    private  ConsumerAgentRpcClient rpcClient;
+    private  ConsumerAgentRpcClient rpcClient = new ConsumerAgentRpcClient();
+    ;
     private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
 
     public HttpServerHandler(RegisteGetThread registeGetThread){
@@ -62,19 +59,19 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         System.out.println("\r\n\r\n");
         for (Map.Entry<String, String> entry : fullHttpRequest.headers()) {
             System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
-        }
-*/
+        }*/
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
         // 设置缓存大小
-//          ByteBuffer byteBuffer = new ByteBuffer();
-//          byteBuffer.size();
-//          byteBuffer.append("恭喜你,成功了!");
+          /*ByteBuffer byteBuffer = new ByteBuffer();
+          byteBuffer.size();
+          byteBuffer.append("恭喜你,成功了!");*/
 
         HttpMethod method = fullHttpRequest.method();
         String hashCode = "";
         Map<String, String> paraMap = null;
-        if (HttpMethod.POST == method) { // 是POST请求
+        if (HttpMethod.POST == method) {
+            // 是POST请求
             paraMap = getParaMap(fullHttpRequest);
         } else if (HttpMethod.GET == method) {
             // 是GET请求
@@ -83,7 +80,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
         } else {
             // 不支持其它方法
             try {
@@ -94,7 +90,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
 
 
-        rpcClient = new ConsumerAgentRpcClient();
         IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
 
         RPCFuture helloFuture = client.call("getHashCode",
@@ -126,13 +121,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private Map<String, String> getParaMap(FullHttpRequest request){
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
         decoder.offer(request);
-
         List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();
-
         Map<String, String> parmMap = new HashMap<>();
-
         for (InterfaceHttpData parm : parmList) {
-
             Attribute data = (Attribute) parm;
             try {
                 parmMap.put(data.getName(), data.getValue());
