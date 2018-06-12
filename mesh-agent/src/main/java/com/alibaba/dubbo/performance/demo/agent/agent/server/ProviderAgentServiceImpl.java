@@ -9,15 +9,15 @@ import org.slf4j.LoggerFactory;
 
 public class ProviderAgentServiceImpl implements ProviderAgentService{
     public ProviderAgentServiceImpl(){
-        System.out.println("hh "+this.getClass().toString());
+        //System.out.println("hh "+this.getClass().toString());
     }
     private RpcClient rpcClient = new RpcClient();
     private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
     @Override
     public String hello(String para) {
-        logger.info("receive: " + para);
-        return "hello " + para;
+        //logger.info("receive: " + para);
+        return Integer.toString(para.hashCode());
     }
 
     @Override
