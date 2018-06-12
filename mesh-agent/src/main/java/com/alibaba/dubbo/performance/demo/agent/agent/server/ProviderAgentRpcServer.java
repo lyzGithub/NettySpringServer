@@ -56,11 +56,9 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
         this.hostIp = hostIp;
         this.port = port;
         registry = new EtcdRegistry(System.getProperty("etcd.url"));
-        try {
-            this.start();
-        } catch (Exception ex) {
-            logger.error("Exception: {}", ex);
-        }
+        StartNettyThread startNettyThread = new StartNettyThread();
+        Thread thread = new Thread(startNettyThread);
+        thread.start();
     }
 
     @Override
@@ -77,7 +75,9 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        start();
+        StartNettyThread startNettyThread = new StartNettyThread();
+        Thread thread = new Thread(startNettyThread);
+        thread.start();
     }
 
     public void stop() {
@@ -109,33 +109,43 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
         return this;
     }
 
-    private void start() throws Exception {
-        logger.info("In ProviderAgentRpcServer start");
-        if (bossGroup == null && workerGroup == null) {
-            bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup();
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel channel) throws Exception {
-                            channel.pipeline()
-                                    .addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0))
-                                    .addLast(new RpcDecoder(RpcRequest.class))
-                                    .addLast(new RpcEncoder(RpcResponse.class))
-                                    .addLast(new RpcHandler(handlerMap));
-                        }
-                    })
-                    .option(ChannelOption.SO_BACKLOG, 128)
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
-
-            String host = this.hostIp;
-            int port = this.port;
-
-            ChannelFuture future = bootstrap.bind(host, port).sync();
-            logger.info("Server started on port {}", port);
-            future.channel().closeFuture().sync();
+    private class StartNettyThread implements Runnable{
+        @Override
+        public void run() {
+            try {
+                start();
+            } catch (Exception ex) {
+                logger.error("Exception: {}", ex);
+            }
         }
+        private void start() throws Exception {
+            logger.info("In ProviderAgentRpcServer start");
+            if (bossGroup == null && workerGroup == null) {
+                bossGroup = new NioEventLoopGroup();
+                workerGroup = new NioEventLoopGroup();
+                ServerBootstrap bootstrap = new ServerBootstrap();
+                bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
+                        .childHandler(new ChannelInitializer<SocketChannel>() {
+                            @Override
+                            public void initChannel(SocketChannel channel) throws Exception {
+                                channel.pipeline()
+                                        .addLast(new LengthFieldBasedFrameDecoder(65536, 0, 4, 0, 0))
+                                        .addLast(new RpcDecoder(RpcRequest.class))
+                                        .addLast(new RpcEncoder(RpcResponse.class))
+                                        .addLast(new RpcHandler(handlerMap));
+                            }
+                        })
+                        .option(ChannelOption.SO_BACKLOG, 128)
+                        .childOption(ChannelOption.SO_KEEPALIVE, true);
+
+
+                ChannelFuture future = bootstrap.bind(hostIp, port).sync();
+                logger.info("Server started on port {}", port);
+                future.channel().closeFuture().sync();
+            }
+    }
+
+
     }
 
     public static void run(String hostIp, int port){
