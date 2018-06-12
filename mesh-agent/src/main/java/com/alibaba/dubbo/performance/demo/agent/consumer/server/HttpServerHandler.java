@@ -74,15 +74,20 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         HttpMethod method = fullHttpRequest.method();
         String hashCode = "";
         Map<String, String> paraMap = null;
-        if (HttpMethod.GET == method) {
-            // 是GET请求
-        } else if (HttpMethod.POST == method) { // 是POST请求
+        if (HttpMethod.POST == method) { // 是POST请求
             paraMap = getParaMap(fullHttpRequest);
+        } else if (HttpMethod.GET == method) {
+            // 是GET请求
+            try {
+                throw new Exception("除[POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
         } else {
             // 不支持其它方法
             try {
-                throw new Exception("除[GET|POST]外，不支持其它方法!!!");
+                throw new Exception("除[POST]外，不支持其它方法!!!");
             } catch (Exception e) {
                 e.printStackTrace();
             }
