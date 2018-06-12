@@ -96,7 +96,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
                         paraMap.get("parameter")));
         //System.out.println("write finish!");
-        String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
+        String result = (String) helloFuture.get(20, TimeUnit.MILLISECONDS);
         logger.info("get result: "+result);
         hashCode = result;
 
