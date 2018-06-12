@@ -46,6 +46,7 @@ public class ConnecManager {
         return channel;
     }
 
+
     public void initBootstrap() {
 
         bootstrap = new Bootstrap()
