@@ -8,10 +8,10 @@ import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.boot.SpringApplication;
+//import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+//@SpringBootApplication
 public class AgentApp {
     // agent会作为sidecar，部署在每一个Provider和Consumer机器上
     // 在Provider端启动agent时，添加JVM参数-Dtype=provider -Dserver.port=30000 -Ddubbo.protocol.port=20889

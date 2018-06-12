@@ -23,15 +23,15 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
     @Override
     public String getHashCode(RequestPara requestPara) {
 
-        Object result = null;
+        /*Object result = null;
         try {
             result = rpcClient.invoke(requestPara.getInterfaceName(),requestPara.getMethodName(),requestPara.getParameterTypesString()
             ,requestPara.getParameter());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String hashCode = new String((byte[]) result);
-        //String hashCode = Integer.toString(requestPara.getParameter().hashCode());
+        String hashCode = new String((byte[]) result);*/
+        String hashCode = Integer.toString(requestPara.getParameter().hashCode());
         //logger.info(hashCode);
         return hashCode;
     }
