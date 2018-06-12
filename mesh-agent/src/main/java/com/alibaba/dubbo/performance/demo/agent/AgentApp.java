@@ -4,6 +4,7 @@ import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcSer
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
 import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentServiceImpl;
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.HttpConsumerServer;
+import com.alibaba.dubbo.performance.demo.agent.dubbo.TestRPCClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,10 @@ public class AgentApp {
                 ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
                 ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
+
+                //test dubbo
+                Thread.sleep(500);
+                TestRPCClient testRPCClient = new TestRPCClient();
                 try {
                     rpcServer.start();
                 } catch (Exception ex) {
