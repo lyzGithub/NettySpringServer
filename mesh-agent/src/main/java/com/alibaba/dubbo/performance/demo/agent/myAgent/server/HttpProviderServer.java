@@ -1,6 +1,8 @@
 package com.alibaba.dubbo.performance.demo.agent.myAgent.server;
 
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
+import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
+import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -24,7 +26,8 @@ public class HttpProviderServer {
 
     //private static ThreadPoolExecutor threadPoolExecutor = null;
     private static final Logger logger = LoggerFactory.getLogger(HttpProviderServer.class);
-     private RpcClient rpcClient ;
+    private RpcClient rpcClient ;
+    private IRegistry registry = new EtcdRegistry(System.getProperty("etcd.url"));
 
     private String host = "";
     private int port = 0;
