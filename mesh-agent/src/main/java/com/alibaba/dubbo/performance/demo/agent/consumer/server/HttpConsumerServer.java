@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpConsumerServer {
 
-    private static ThreadPoolExecutor threadPoolExecutor;
+    private static ThreadPoolExecutor threadPoolExecutor = null;
     private static final Logger logger = LoggerFactory.getLogger(HttpConsumerServer.class);
 
 
@@ -60,7 +60,7 @@ public class HttpConsumerServer {
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
                 if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(10, 256, 600L,
+                    threadPoolExecutor = new ThreadPoolExecutor(16, 256, 600L,
                             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
                 }
             }
