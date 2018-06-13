@@ -99,6 +99,7 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
             }
         }
         threadPoolExecutor.submit(task);
+        logger.info("Server now active thread is: "+threadPoolExecutor.getActiveCount());
     }
 
     public ProviderAgentRpcServer addService(String interfaceName, Object serviceBean) {
