@@ -45,12 +45,12 @@ public class AgentApp {
                     e.printStackTrace();
                 }
                 ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
-                ProviderAgentService providerAgentService = new ProviderAgentServiceImpl(new RpcClient());
+                ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
                 System.out.println("add service: " + "com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService");
                 rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
                 System.out.println("add service done! ");
 
-                //TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
+                TestRPCClient testRPCClient = new TestRPCClient(new RpcClient());
 
             } catch (Exception e) {
                 e.printStackTrace();

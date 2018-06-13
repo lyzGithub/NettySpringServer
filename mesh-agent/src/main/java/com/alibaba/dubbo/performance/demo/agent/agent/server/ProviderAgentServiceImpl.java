@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 
 public class ProviderAgentServiceImpl implements ProviderAgentService{
 
-    private RpcClient rpcClient ;
+    //private RpcClient rpcClient ;
     private static Logger logger = LoggerFactory.getLogger(ProviderAgentServiceImpl.class);
 
-    public ProviderAgentServiceImpl(RpcClient rpcClient){
-        this.rpcClient = rpcClient;
+    public ProviderAgentServiceImpl(){
+        //this.rpcClient = new RpcClient();
     }
 
     @Override
@@ -32,13 +32,13 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
         try {
             /*result = rpcClient.invoke(requestPara.getInterfaceName(),requestPara.getMethodName(),
                     requestPara.getParameterTypesString(),requestPara.getParameter());*/
-            result = rpcClient.invoke(interfaceName,methodName,
-                    parameterTypesString,requestPara.getParameter());
+            /*result = rpcClient.invoke(interfaceName,methodName,
+                    parameterTypesString,requestPara.getParameter());*/
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String hashCode = new String((byte[]) result);
-        //String hashCode = Integer.toString(requestPara.getParameter().hashCode());
+        //String hashCode = new String((byte[]) result);
+        String hashCode = Integer.toString(requestPara.getParameter().hashCode());
 
         return hashCode;
     }
