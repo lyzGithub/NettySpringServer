@@ -30,7 +30,7 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
     @Override
     public void channelRead0(final ChannelHandlerContext ctx, final RpcRequest request) throws Exception {
 
-        //logger.info("Receive request " + request.getRequestId());
+        logger.info("Receive request " + request.getRequestId());
         RpcResponse response = new RpcResponse();
         response.setRequestId(request.getRequestId());
         try {
