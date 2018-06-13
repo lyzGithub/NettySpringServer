@@ -53,6 +53,26 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     }
 
+
+    @Override
+    protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
+        /*Thread.sleep(1000);
+        handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
+        count++;
+        logger.info("Get request in the http server in consumer!!" + count);
+        long startM = System.currentTimeMillis();
+        handleRequest(ctx, fullHttpRequest);
+        long endM = System.currentTimeMillis();
+        logger.info("spend time: " + (endM - startM));
+
+        /*HttpConsumerServer.submit(new Runnable() {
+            @Override
+            public void run() {
+                handleRequest(ctx, fullHttpRequest);
+            }
+        });*/
+    }
+
     private  static void submit(Runnable task) {
         if (threadPoolExecutor == null) {
             synchronized (lock) {
@@ -64,26 +84,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
         threadPoolExecutor.submit(task);
         logger.info("provider Server now active thread is: "+threadPoolExecutor.getActiveCount());
-    }
-    @Override
-    protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-        /*Thread.sleep(1000);
-        handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
-        count++;
-        logger.info("Get request in the http server in consumer!!" + count);
-        submit(new Runnable() {
-            @Override
-            public void run() {
-                handleRequest(ctx, fullHttpRequest);
-            }
-        });
-
-        /*HttpConsumerServer.submit(new Runnable() {
-            @Override
-            public void run() {
-                handleRequest(ctx, fullHttpRequest);
-            }
-        });*/
     }
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
