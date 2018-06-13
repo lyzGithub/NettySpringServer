@@ -1,6 +1,6 @@
-package com.alibaba.dubbo.performance.demo.agent.consumer.server;
+package com.alibaba.dubbo.performance.demo.agent.myAgent.server;
 
-import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
+import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -11,23 +11,15 @@ import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.util.CharsetUtil;
-
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
-
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.ListenableFuture;
-import org.asynchttpclient.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
@@ -41,13 +33,9 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
     private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
-    private static ThreadPoolExecutor threadPoolExecutor;
-    private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
-
-    private static Object lock = new Object();
-    RegisteGetThread registeGetThread;
-    public HttpServerHandler(RegisteGetThread registeGetThread){
-        this.registeGetThread = registeGetThread;
+    private RpcClient rpcClient;
+    public HttpServerHandler(RpcClient rpcClient){
+        this.rpcClient = rpcClient;
     }
 
 
@@ -58,17 +46,17 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         count++;
         logger.info("Get request in the http server in consumer!!" + count);
         long startM = System.currentTimeMillis();
-
         handleRequest(ctx,fullHttpRequest);
-        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
         logger.info("spend time: " + (endM - startM));
 
-
     }
+
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
         HttpMethod method = fullHttpRequest.method();
         String hashCode = "";
@@ -92,35 +80,17 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         }
 
-        Endpoint endpoint = registeGetThread.getEndPoint();
-        String url = "http://"+endpoint.getHost()+":"+endpoint.getPort();
 
-        org.asynchttpclient.Request request = org.asynchttpclient.Dsl.post(url)
-                .addFormParam("interface", paraMap.get("interface"))
-                .addFormParam("method", paraMap.get("method"))
-                .addFormParam("parameterTypesString", paraMap.get("parameterTypesString"))
-                .addFormParam("parameter", paraMap.get("parameter"))
-                .build();
+        byte[] result = null;
 
-        ListenableFuture<Response> responseFuture = asyncHttpClient.executeRequest(request);
+        try {
+            result = (byte[])rpcClient.invoke(paraMap.get("interface"),paraMap.get("method"),
+                    paraMap.get("parameterTypesString"), paraMap.get("parameter"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
-        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-        responseFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String hashCode = responseFuture.get().getResponseBody();
-                    httpResponse.content().writeBytes(hashCode.getBytes());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, null);
-
-
+        httpResponse.content().writeBytes(result);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
@@ -129,7 +99,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
         if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
-            future.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
+            future.addListener(new GenericFutureListener<Future<? super Void>>() {
                 public void operationComplete(io.netty.util.concurrent.Future future) throws Exception {
                     ctx.close();
                 }
@@ -198,6 +168,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
         return parmMap;
     }
+
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)

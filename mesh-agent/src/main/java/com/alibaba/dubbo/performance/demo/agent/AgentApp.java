@@ -1,11 +1,8 @@
 package com.alibaba.dubbo.performance.demo.agent;
 
-import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentRpcServer;
-import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService;
-import com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentServiceImpl;
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.HttpConsumerServer;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
-import com.alibaba.dubbo.performance.demo.agent.dubbo.TestRPCClient;
+import com.alibaba.dubbo.performance.demo.agent.myAgent.server.HttpProviderServer;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +41,7 @@ public class AgentApp {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                
-                ProviderAgentRpcServer rpcServer = new ProviderAgentRpcServer(hostIp, port);
-                ProviderAgentService providerAgentService = new ProviderAgentServiceImpl();
-                System.out.println("add service: " + "com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService");
-                rpcServer.addService("com.alibaba.dubbo.performance.demo.agent.agent.server.ProviderAgentService", providerAgentService);
-                System.out.println("add service done! ");
-
+                HttpProviderServer.main(hostIp,port, new RpcClient());
                 //TestRPCClient testRPCClient = new TestRPCClient();
 
             } catch (Exception e) {

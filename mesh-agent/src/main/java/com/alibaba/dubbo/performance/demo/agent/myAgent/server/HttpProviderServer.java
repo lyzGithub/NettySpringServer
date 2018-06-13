@@ -1,5 +1,6 @@
-package com.alibaba.dubbo.performance.demo.agent.consumer.server;
+package com.alibaba.dubbo.performance.demo.agent.myAgent.server;
 
+import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,31 +11,31 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 
 /**
  * Created by carl.yu on 2016/12/16.
  */
-public class HttpConsumerServer {
+public class HttpProviderServer {
 
-    private static ThreadPoolExecutor threadPoolExecutor = null;
-    private static final Logger logger = LoggerFactory.getLogger(HttpConsumerServer.class);
+    //private static ThreadPoolExecutor threadPoolExecutor = null;
+    private static final Logger logger = LoggerFactory.getLogger(HttpProviderServer.class);
+     private RpcClient rpcClient ;
 
     private String host = "";
     private int port = 0;
 
-    public HttpConsumerServer(String hostIp, int port){
+    public HttpProviderServer(String hostIp, int port, RpcClient rpcClient){
         this.host = hostIp;
         this.port = port;
         RunInit runInit = new RunInit();
         Thread thread = new Thread(runInit);
         thread.start();
+        this.rpcClient = rpcClient;
     }
 
     private class RunInit implements Runnable{
@@ -45,7 +46,6 @@ public class HttpConsumerServer {
         public void run() {
             EventLoopGroup bossGroup=new NioEventLoopGroup();
             EventLoopGroup workerGroup=new NioEventLoopGroup();
-            RegisteGetThread registeGetThread = new RegisteGetThread();
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
@@ -55,7 +55,7 @@ public class HttpConsumerServer {
                                 socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
                                 socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
                                 socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
-                                socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(registeGetThread));
+                                socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(rpcClient));
                             }
                         });
                 System.out.println("服务器网址:"+host+":"+port);
@@ -72,22 +72,8 @@ public class HttpConsumerServer {
     }
 
 
-    public static void submit(Runnable task){
-        if (threadPoolExecutor == null) {
-            synchronized (HttpConsumerServer.class) {
-                if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
-                            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
-                }
-            }
-        }
-        threadPoolExecutor.submit(task);
-        logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
-    }
-
-
-    public static void main(String host, int port) throws Exception {
-        new HttpConsumerServer(host,port);
+    public static void main(String host, int port, RpcClient rpcClient) throws Exception {
+        new HttpProviderServer(host,port,rpcClient);
     }
 
 }
