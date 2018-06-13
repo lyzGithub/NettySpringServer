@@ -60,7 +60,7 @@ public class HttpConsumerServer {
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
                 if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(16, 256, 600L,
+                    threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
                             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
                 }
             }
