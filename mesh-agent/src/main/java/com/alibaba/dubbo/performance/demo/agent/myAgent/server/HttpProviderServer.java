@@ -35,10 +35,10 @@ public class HttpProviderServer {
     public HttpProviderServer(String hostIp, int port, RpcClient rpcClient){
         this.host = hostIp;
         this.port = port;
+        this.rpcClient = rpcClient;
         RunInit runInit = new RunInit();
         Thread thread = new Thread(runInit);
         thread.start();
-        this.rpcClient = rpcClient;
     }
 
     private class RunInit implements Runnable{

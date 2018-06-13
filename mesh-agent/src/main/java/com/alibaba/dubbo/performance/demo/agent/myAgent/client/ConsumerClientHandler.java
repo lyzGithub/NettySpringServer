@@ -1,3 +1,4 @@
+/*
 package com.alibaba.dubbo.performance.demo.agent.myAgent.client;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -34,3 +35,4 @@ public class ConsumerClientHandler extends SimpleChannelInboundHandler<String> {
         cause.printStackTrace();
     }
 }
+*/
