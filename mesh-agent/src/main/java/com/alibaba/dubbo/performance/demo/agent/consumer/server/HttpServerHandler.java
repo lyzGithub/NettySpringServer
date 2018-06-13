@@ -56,8 +56,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
         /*Thread.sleep(1000);
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
-
-        logger.info("Get request in the http server in consumer!!");
+        count++;
+        logger.info("Get request in the http server in consumer!!" + count);
         HttpConsumerServer.submit(new Runnable() {
             @Override
             public void run() {
