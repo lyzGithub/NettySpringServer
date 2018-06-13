@@ -58,7 +58,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         count++;
         logger.info("Get request in the http server in consumer!!" + count);
         long startM = System.currentTimeMillis();
-
         handleRequest(ctx,fullHttpRequest);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
