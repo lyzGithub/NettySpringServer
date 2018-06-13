@@ -55,14 +55,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
 
-        /*System.out.println("Http server receive request  " + fullHttpRequest);
-        System.out.println("VERSION: " + fullHttpRequest.getProtocolVersion().text() + "\r\n");
-        System.out.println("REQUEST_URI: " + fullHttpRequest.getUri() + "\r\n\r\n");
-        System.out.println("\r\n\r\n");
-        for (Map.Entry<String, String> entry : fullHttpRequest.headers()) {
-            System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
-        }*/
-
         HttpConsumerServer.submit(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +92,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
                 //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
 
-
                 String result = null;
                 try {
                     result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
@@ -126,6 +117,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                     @Override
                     public void operationComplete(ChannelFuture channelFuture) throws Exception {
                         //logger.info("Send response for request " + request.getRequestId());
+                        ctx.close();
                     }
                 });
 
