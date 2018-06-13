@@ -58,12 +58,14 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
         count++;
         logger.info("Get request in the http server in consumer!!" + count);
-        HttpConsumerServer.submit(new Runnable() {
+        handleRequest(ctx, fullHttpRequest);
+
+        /*HttpConsumerServer.submit(new Runnable() {
             @Override
             public void run() {
                 handleRequest(ctx, fullHttpRequest);
             }
-        });
+        });*/
     }
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
