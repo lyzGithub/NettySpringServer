@@ -93,7 +93,7 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
         if (threadPoolExecutor == null) {
             synchronized (ProviderAgentRpcServer.class) {
                 if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(16, 16, 600L,
+                    threadPoolExecutor = new ThreadPoolExecutor(100, 200, 600L,
                             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
                 }
             }
