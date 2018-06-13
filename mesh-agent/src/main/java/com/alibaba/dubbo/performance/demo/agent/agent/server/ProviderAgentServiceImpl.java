@@ -30,7 +30,6 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
     @Override
     public String getHashCode(RequestPara requestPara) {
         long startM = System.currentTimeMillis();
-
         Object result = null;
         try {
             result = rpcClient.invoke(requestPara.getInterfaceName(),requestPara.getMethodName(),
