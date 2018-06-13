@@ -139,7 +139,6 @@ public class ProviderAgentRpcServer implements ApplicationContextAware, Initiali
                         .option(ChannelOption.SO_BACKLOG, 128)
                         .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-
                 ChannelFuture future = bootstrap.bind(hostIp, port).sync();
                 logger.info("Server started on port {}", port);
                 future.channel().closeFuture().sync();
