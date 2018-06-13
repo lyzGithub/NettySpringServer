@@ -26,7 +26,6 @@ public class RequestPara {
     public void setParameter(String parameter) {
         this.parameter = parameter;
     }
-
     public String getInterfaceName(){
         return this.interfaceName;
     }
