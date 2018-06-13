@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -44,13 +42,27 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
  */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
-    private RegisteGetThread registeGetThread;
     private  ConsumerAgentRpcClient rpcClient = new ConsumerAgentRpcClient();
-    ;
-    private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
 
-    public HttpServerHandler(RegisteGetThread registeGetThread){
-        this.registeGetThread = registeGetThread;
+    private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
+    private static ThreadPoolExecutor threadPoolExecutor;
+
+    private Object object = new Object();
+
+    public HttpServerHandler(){
+
+    }
+    public static void submit(Runnable task) {
+        if (threadPoolExecutor == null) {
+            synchronized (object) {
+                if (threadPoolExecutor == null) {
+                    threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
+                            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
+                }
+            }
+        }
+        threadPoolExecutor.submit(task);
+        logger.info("provider Server now active thread is: "+threadPoolExecutor.getActiveCount());
     }
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
@@ -59,6 +71,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         count++;
         logger.info("Get request in the http server in consumer!!" + count);
         handleRequest(ctx, fullHttpRequest);
+
 
         /*HttpConsumerServer.submit(new Runnable() {
             @Override
