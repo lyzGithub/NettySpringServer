@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
 
 public class ConsumerClient {
 
-    public static void main(String[] args) {
+    public static void run(String[] args) {
 
         //worker负责读写数据
         EventLoopGroup worker = new NioEventLoopGroup();
