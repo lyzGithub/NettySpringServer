@@ -47,14 +47,15 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
     private static ThreadPoolExecutor threadPoolExecutor;
 
-    private Object object = new Object();
+    private static Object lock = new Object();
 
     public HttpServerHandler(){
 
     }
-    public static void submit(Runnable task) {
+
+    private  static void submit(Runnable task) {
         if (threadPoolExecutor == null) {
-            synchronized (object) {
+            synchronized (lock) {
                 if (threadPoolExecutor == null) {
                     threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
                             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
@@ -70,8 +71,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
         count++;
         logger.info("Get request in the http server in consumer!!" + count);
-        handleRequest(ctx, fullHttpRequest);
-
+        submit(new Runnable() {
+            @Override
+            public void run() {
+                handleRequest(ctx, fullHttpRequest);
+            }
+        });
 
         /*HttpConsumerServer.submit(new Runnable() {
             @Override
