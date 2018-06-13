@@ -109,6 +109,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
+        Thread.sleep(1000);
+
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
         if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
