@@ -42,7 +42,7 @@ public class RegisteGetThread {
                 }
                 //System.out.println("endpoints.size()" + size);
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

@@ -58,82 +58,121 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         HttpConsumerServer.submit(new Runnable() {
             @Override
             public void run() {
-
-                FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-
-                HttpMethod method = fullHttpRequest.method();
-                String hashCode = "";
-                Map<String, String> paraMap = null;
-                if (HttpMethod.POST == method) {
-                    // 是POST请求
-                    paraMap = getParaMap(fullHttpRequest);
-                } else if (HttpMethod.GET == method) {
-                    // 是GET请求
-                    try {
-                        throw new Exception("除[POST]外，不支持其它方法!!!");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    // 不支持其它方法
-                    try {
-                        throw new Exception("除[POST]外，不支持其它方法!!!");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
-
-                RPCFuture helloFuture = client.call("getHashCode",
-                        new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
-                                paraMap.get("parameter")));
-
-                //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
-
-                String result = null;
-                try {
-                    result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                }
-                hashCode = result;
-
-                //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
-
-                byte[] hashBytes = hashCode.getBytes();
-                httpResponse.content().writeBytes(hashBytes);
-                httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-                httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
-
-                //Thread.sleep(1000);
-
-                ctx.writeAndFlush(httpResponse).addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
-                        //logger.info("Send response for request " + request.getRequestId());
-                        ctx.close();
-                    }
-                });
-
-                /*ChannelFuture future = ctx.writeAndFlush(httpResponse);
-
-                if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
-                    future.addListener(new GenericFutureListener<Future<? super Void>>() {
-                        public void operationComplete(Future future) throws Exception {
-                            ctx.close();
-                        }
-                    });
-                }*/
+                handleRequestDirectReturnTest(ctx, fullHttpRequest);
             }
         });
 
 
+    }
+
+    private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
+
+        HttpMethod method = fullHttpRequest.method();
+        String hashCode = "";
+        Map<String, String> paraMap = null;
+        if (HttpMethod.POST == method) {
+            // 是POST请求
+            paraMap = getParaMap(fullHttpRequest);
+        } else if (HttpMethod.GET == method) {
+            // 是GET请求
+            try {
+                throw new Exception("除[POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 不支持其它方法
+            try {
+                throw new Exception("除[POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
+
+        RPCFuture helloFuture = client.call("getHashCode",
+                new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
+                        paraMap.get("parameter")));
+
+        //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
+
+        String result = null;
+        try {
+            result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        hashCode = result;
+
+
+        byte[] hashBytes = hashCode.getBytes();
+        httpResponse.content().writeBytes(hashBytes);
+        httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
+
+        //Thread.sleep(1000);
+
+        ChannelFuture future = ctx.writeAndFlush(httpResponse);
+
+        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+            future.addListener(new GenericFutureListener<Future<? super Void>>() {
+                public void operationComplete(Future future) throws Exception {
+                    ctx.close();
+                }
+            });
+        }
+    }
+
+    private void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
+
+        HttpMethod method = fullHttpRequest.method();
+        String hashCode = "";
+        Map<String, String> paraMap = null;
+        if (HttpMethod.POST == method) {
+            // 是POST请求
+            paraMap = getParaMap(fullHttpRequest);
+        } else if (HttpMethod.GET == method) {
+            // 是GET请求
+            try {
+                throw new Exception("除[POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // 不支持其它方法
+            try {
+                throw new Exception("除[POST]外，不支持其它方法!!!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        hashCode = Integer.toString(paraMap.get("parameter").hashCode());
+
+        byte[] hashBytes = hashCode.getBytes();
+        httpResponse.content().writeBytes(hashBytes);
+        httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
+
+        ChannelFuture future = ctx.writeAndFlush(httpResponse);
+
+        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+            future.addListener(new GenericFutureListener<Future<? super Void>>() {
+                public void operationComplete(Future future) throws Exception {
+                    ctx.close();
+                }
+            });
+        }
     }
 
 
