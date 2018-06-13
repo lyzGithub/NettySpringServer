@@ -89,6 +89,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         } catch (Exception e) {
             e.printStackTrace();
         }
+        logger.info("return httpResponse result hashcode: " + new String(result));
 
         httpResponse.content().writeBytes(result);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");

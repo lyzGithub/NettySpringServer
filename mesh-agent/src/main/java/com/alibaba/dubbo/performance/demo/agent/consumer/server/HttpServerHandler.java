@@ -123,7 +123,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
-        //Thread.sleep(1000);
+        logger.info("return httpResponse");
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
