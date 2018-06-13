@@ -10,8 +10,8 @@ public class TestRPCClient {
     private long dulationTimeMill = 30000;
 
     private long count= 0;
-    public TestRPCClient(RpcClient rpcClient){
-        this.rpcClient = rpcClient;
+    public TestRPCClient(){
+        this.rpcClient = new RpcClient();
         int getNum = 10;
         RunGetETCD[] rS = new RunGetETCD[getNum];
         for(int i = 0; i< getNum; i++) {

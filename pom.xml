@@ -74,14 +74,14 @@
     </dependencyManagement>
 
 
-   <!-- <repositories>
+   <repositories>
         <repository>
-            <id>nexus-osc</id>
-            <name>Nexus osc</name>
-            <url>http://maven.oschina.net/content/groups/public/</url>
+            <id>repo3</id>
+            <name>Human Readable Name for this Mirror.</name>
+            <url>https://repo.spring.io/libs-snapshot/</url>
         </repository>
     </repositories>
--->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
