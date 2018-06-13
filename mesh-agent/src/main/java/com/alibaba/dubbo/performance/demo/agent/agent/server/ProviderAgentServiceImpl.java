@@ -29,6 +29,7 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
     private final String methodName = "hash";*/
     @Override
     public String getHashCode(RequestPara requestPara) {
+        long startM = System.currentTimeMillis();
 
         Object result = null;
         try {
@@ -39,6 +40,8 @@ public class ProviderAgentServiceImpl implements ProviderAgentService{
         }
         String hashCode = new String((byte[]) result);
         //String hashCode = Integer.toString(requestPara.getParameter().hashCode());
+        long endM = System.currentTimeMillis();
+        logger.info("spend time: " + (endM - startM));
 
         return hashCode;
     }
