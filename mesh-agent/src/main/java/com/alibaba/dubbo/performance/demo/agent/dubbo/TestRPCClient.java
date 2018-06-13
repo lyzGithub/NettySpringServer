@@ -12,7 +12,7 @@ public class TestRPCClient {
     private long count= 0;
     public TestRPCClient(RpcClient rpcClient){
         this.rpcClient = rpcClient;
-        int getNum = 500;
+        int getNum = 100;
         RunGetETCD[] rS = new RunGetETCD[getNum];
         for(int i = 0; i< getNum; i++) {
             RunGetETCD runGetETCD = new RunGetETCD();
@@ -52,23 +52,27 @@ public class TestRPCClient {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
+            long averageTime = 0;
             long startTime = System.currentTimeMillis();
             while(!isStop) {
                 Object result = null;
+                long duTime = System.currentTimeMillis();
                 try {
                     result = rpcClient.invoke(interfaceName, parameterTypesString, methodName, str);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                byte[] nb = (byte[]) result;
+                String nb = new String((byte[]) result);
                 count ++;
                 long nowTime = System.currentTimeMillis();
+                averageTime += nowTime-duTime;
                 //System.out.println("thread time: " + (nowTime- startTime));
                 if(Math.abs(nowTime- startTime) > dulationTimeMill){
                     isStop = true;
                 }
             }
+            averageTime = averageTime/count;
+            System.out.println("~~~~~~~~~~~average time for each rpc client request: " + averageTime);
         }
 
         public boolean isGetDone(){
