@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -51,7 +53,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         this.registeGetThread = registeGetThread;
     }
     @Override
-    protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) throws Exception {
+    protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
 
         /*System.out.println("Http server receive request  " + fullHttpRequest);
         System.out.println("VERSION: " + fullHttpRequest.getProtocolVersion().text() + "\r\n");
@@ -61,65 +63,78 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             System.out.println("HEADER: " + entry.getKey() + '=' + entry.getValue() + "\r\n");
         }*/
 
-        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-        // 设置缓存大小
-          /*ByteBuffer byteBuffer = new ByteBuffer();
-          byteBuffer.size();
-          byteBuffer.append("恭喜你,成功了!");*/
+        HttpConsumerServer.submit(new Runnable() {
+            @Override
+            public void run() {
 
-        HttpMethod method = fullHttpRequest.method();
-        String hashCode = "";
-        Map<String, String> paraMap = null;
-        if (HttpMethod.POST == method) {
-            // 是POST请求
-            paraMap = getParaMap(fullHttpRequest);
-        } else if (HttpMethod.GET == method) {
-            // 是GET请求
-            try {
-                throw new Exception("除[POST]外，不支持其它方法!!!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // 不支持其它方法
-            try {
-                throw new Exception("除[POST]外，不支持其它方法!!!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+                FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
-
-        IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
-
-        RPCFuture helloFuture = client.call("getHashCode",
-                new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
-                        paraMap.get("parameter")));
-
-        //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
-
-
-        String result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
-        hashCode = result;
-
-        //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
-
-        byte[] hashBytes = hashCode.getBytes();
-        httpResponse.content().writeBytes(hashBytes);
-        httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-        httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
-
-        //Thread.sleep(1000);
-
-        ChannelFuture future = ctx.writeAndFlush(httpResponse);
-
-        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
-            future.addListener(new GenericFutureListener<Future<? super Void>>() {
-                public void operationComplete(Future future) throws Exception {
-                    ctx.close();
+                HttpMethod method = fullHttpRequest.method();
+                String hashCode = "";
+                Map<String, String> paraMap = null;
+                if (HttpMethod.POST == method) {
+                    // 是POST请求
+                    paraMap = getParaMap(fullHttpRequest);
+                } else if (HttpMethod.GET == method) {
+                    // 是GET请求
+                    try {
+                        throw new Exception("除[POST]外，不支持其它方法!!!");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // 不支持其它方法
+                    try {
+                        throw new Exception("除[POST]外，不支持其它方法!!!");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            });
-        }
+
+
+                IAsyncObjectProxy client = rpcClient.createAsync(ProviderAgentService.class);
+
+                RPCFuture helloFuture = client.call("getHashCode",
+                        new RequestPara(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),
+                                paraMap.get("parameter")));
+
+                //RPCFuture helloFuture = client.call("hello", paraMap.get("parameter"));
+
+
+                String result = null;
+                try {
+                    result = (String) helloFuture.get(3000, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (TimeoutException e) {
+                    e.printStackTrace();
+                }
+                hashCode = result;
+
+                //hashCode = Integer.toString(paraMap.get("parameter").hashCode());
+
+                byte[] hashBytes = hashCode.getBytes();
+                httpResponse.content().writeBytes(hashBytes);
+                httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+                httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
+
+                //Thread.sleep(1000);
+
+                ChannelFuture future = ctx.writeAndFlush(httpResponse);
+
+                if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+                    future.addListener(new GenericFutureListener<Future<? super Void>>() {
+                        public void operationComplete(Future future) throws Exception {
+                            ctx.close();
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
 

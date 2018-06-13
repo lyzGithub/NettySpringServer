@@ -10,12 +10,22 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
  * Created by carl.yu on 2016/12/16.
  */
 public class HttpConsumerServer {
+
+    private static ThreadPoolExecutor threadPoolExecutor;
+    private static final Logger logger = LoggerFactory.getLogger(HttpConsumerServer.class);
+
 
     public void run(final String host,  final int port) throws Exception {
         EventLoopGroup bossGroup=new NioEventLoopGroup();
@@ -45,6 +55,20 @@ public class HttpConsumerServer {
             workerGroup.shutdownGracefully();
         }
     }
+
+    public static void submit(Runnable task){
+        if (threadPoolExecutor == null) {
+            synchronized (HttpConsumerServer.class) {
+                if (threadPoolExecutor == null) {
+                    threadPoolExecutor = new ThreadPoolExecutor(10, 256, 600L,
+                            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
+                }
+            }
+        }
+        threadPoolExecutor.submit(task);
+        logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
+    }
+
 
     public static void main(String host, int port) throws Exception {
         new HttpConsumerServer().run(host,port);
