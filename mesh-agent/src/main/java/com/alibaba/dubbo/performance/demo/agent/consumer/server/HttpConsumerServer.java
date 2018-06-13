@@ -32,40 +32,43 @@ public class HttpConsumerServer {
     public HttpConsumerServer(String hostIp, int port){
         this.host = hostIp;
         this.port = port;
-        HttpConsumerServer.submit(new Runnable() {
-            @Override
-            public void run() {
-                runInit(host,port);
-            }
-        });
+        RunInit runInit = new RunInit();
+        Thread thread = new Thread(runInit);
+        thread.start();
     }
 
-    private void runInit(String host, int port){
-        EventLoopGroup bossGroup=new NioEventLoopGroup();
-        EventLoopGroup workerGroup=new NioEventLoopGroup();
-        RegisteGetThread registeGetThread = new RegisteGetThread();
-        try{
-            ServerBootstrap bootstrap=new ServerBootstrap();
-            bootstrap.group(bossGroup,workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new ChannelInitializer<SocketChannel>() {
-                        protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
-                            socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
-                            socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
-                            socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(registeGetThread));
+    private class RunInit implements Runnable{
+        public RunInit(){
 
-                        }
-                    });
-            System.out.println("服务器网址:"+host+":"+port);
-            ChannelFuture future = bootstrap.bind(host,port).sync();
-            System.out.println("服务器已启动>>网址:"+host+":"+port);
-            future.channel().closeFuture().sync();
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+        }
+        @Override
+        public void run() {
+            EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup workerGroup=new NioEventLoopGroup();
+            RegisteGetThread registeGetThread = new RegisteGetThread();
+            try{
+                ServerBootstrap bootstrap=new ServerBootstrap();
+                bootstrap.group(bossGroup,workerGroup)
+                        .channel(NioServerSocketChannel.class)
+                        .childHandler(new ChannelInitializer<SocketChannel>() {
+                            protected void initChannel(SocketChannel socketChannel) throws Exception {
+                                socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
+                                socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
+                                socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
+                                socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(registeGetThread));
+
+                            }
+                        });
+                System.out.println("服务器网址:"+host+":"+port);
+                ChannelFuture future = bootstrap.bind(host,port).sync();
+                System.out.println("服务器已启动>>网址:"+host+":"+port);
+                future.channel().closeFuture().sync();
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                bossGroup.shutdownGracefully();
+                workerGroup.shutdownGracefully();
+            }
         }
     }
 
