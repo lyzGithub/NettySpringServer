@@ -26,8 +26,21 @@ public class HttpConsumerServer {
     private static ThreadPoolExecutor threadPoolExecutor = null;
     private static final Logger logger = LoggerFactory.getLogger(HttpConsumerServer.class);
 
+    private String host = "";
+    private int port = 0;
 
-    public void run(final String host,  final int port) throws Exception {
+    public HttpConsumerServer(String hostIp, int port){
+        this.host = hostIp;
+        this.port = port;
+        HttpConsumerServer.submit(new Runnable() {
+            @Override
+            public void run() {
+                runInit(host,port);
+            }
+        });
+    }
+
+    private void runInit(String host, int port){
         EventLoopGroup bossGroup=new NioEventLoopGroup();
         EventLoopGroup workerGroup=new NioEventLoopGroup();
         RegisteGetThread registeGetThread = new RegisteGetThread();
@@ -56,6 +69,7 @@ public class HttpConsumerServer {
         }
     }
 
+
     public static void submit(Runnable task){
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
@@ -71,7 +85,7 @@ public class HttpConsumerServer {
 
 
     public static void main(String host, int port) throws Exception {
-        new HttpConsumerServer().run(host,port);
+        new HttpConsumerServer(host,port);
     }
 
 }
