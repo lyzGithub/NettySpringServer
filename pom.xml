@@ -76,9 +76,9 @@
 
    <repositories>
         <repository>
-            <id>repo3</id>
-            <name>Human Readable Name for this Mirror.</name>
-            <url>https://repo.spring.io/libs-snapshot/</url>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 
