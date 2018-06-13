@@ -43,11 +43,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
         /*Thread.sleep(1000);
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
-        count++;
-        logger.info("Get request in the http server in consumer!!" + count);
+        //count++;
+        //logger.info("Get request in the http server in consumer!!" + count);
         long startM = System.currentTimeMillis();
-        //handleRequest(ctx,fullHttpRequest);
-        handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        handleRequest(ctx,fullHttpRequest);
+        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
         logger.info("spend time: " + (endM - startM));
 
