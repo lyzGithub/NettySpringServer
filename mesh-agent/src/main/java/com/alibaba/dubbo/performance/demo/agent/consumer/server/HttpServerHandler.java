@@ -122,7 +122,14 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
                 //Thread.sleep(1000);
 
-                ChannelFuture future = ctx.writeAndFlush(httpResponse);
+                ctx.writeAndFlush(httpResponse).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                        //logger.info("Send response for request " + request.getRequestId());
+                    }
+                });
+
+                /*ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
                 if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
                     future.addListener(new GenericFutureListener<Future<? super Void>>() {
@@ -130,7 +137,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                             ctx.close();
                         }
                     });
-                }
+                }*/
             }
         });
 
