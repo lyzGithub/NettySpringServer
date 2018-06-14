@@ -41,8 +41,8 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
     private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
-    private static ThreadPoolExecutor threadPoolExecutor;
-    private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
+    //private static ThreadPoolExecutor threadPoolExecutor;
+    //private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
 
     private static Object lock = new Object();
     RegisteGetThread registeGetThread;
@@ -53,18 +53,29 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-        /*Thread.sleep(1000);
-        handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
-        //count++;
-        //logger.info("Get request in the http server in consumer!!" + count);
-        long startM = System.currentTimeMillis();
-        handleRequest(ctx,fullHttpRequest);
-        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
-        long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));
+
+        HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
 
     }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+            throws Exception {
+        cause.printStackTrace();
+        if (ctx.channel().isActive()) {
+            sendError(ctx, INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    private static void sendError(ChannelHandlerContext ctx,
+                                  HttpResponseStatus status) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
+                status, Unpooled.copiedBuffer("失败: " + status.toString()
+                + "\r\n", CharsetUtil.UTF_8));
+        response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    /*
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
 
@@ -114,7 +125,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         }
         httpResponse.content().writeBytes(hashCode.getBytes());
         System.out.println("hashCode: "+hashCode);
-        /*Runnable callback = () -> {
+
+
+        *//*Runnable callback = () -> {
             try {
                 // 检查返回值是否正确,如果不正确返回500。有以下原因可能导致返回值不对:
                 // 1. agent解析dubbo返回数据不对
@@ -133,7 +146,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         };
 
-        responseFuture.addListener(callback, null);*/
+        responseFuture.addListener(callback, null);*//*
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
@@ -211,23 +224,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         }
         return parmMap;
-    }
+    }*/
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-            throws Exception {
-        cause.printStackTrace();
-        if (ctx.channel().isActive()) {
-            sendError(ctx, INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    private static void sendError(ChannelHandlerContext ctx,
-                                  HttpResponseStatus status) {
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
-                status, Unpooled.copiedBuffer("失败: " + status.toString()
-                + "\r\n", CharsetUtil.UTF_8));
-        response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-    }
 }
