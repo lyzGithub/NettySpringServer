@@ -57,14 +57,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
         //count++;
         //logger.info("Get request in the http server in consumer!!" + count);
-        long startM = System.currentTimeMillis();
-        handleRequest(ctx,fullHttpRequest);
-        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
-        long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));
-
+        HttpRequestHolderThread httpRequestHolderThread = new HttpRequestHolderThread(ctx, fullHttpRequest,registeGetThread);
 
     }
+
+
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
