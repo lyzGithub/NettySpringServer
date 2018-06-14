@@ -42,7 +42,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private int count = 0;
     private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
     //private static ThreadPoolExecutor threadPoolExecutor;
-    //private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
+    private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
 
     private static Object lock = new Object();
     RegisteGetThread registeGetThread;
@@ -54,8 +54,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
 
-        HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
-
+        //HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
+        handleRequest(ctx,fullHttpRequest);
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
@@ -75,7 +75,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
-    /*
+
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
 
@@ -127,7 +127,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         System.out.println("hashCode: "+hashCode);
 
 
-        *//*Runnable callback = () -> {
+        /*Runnable callback = () -> {
             try {
                 // 检查返回值是否正确,如果不正确返回500。有以下原因可能导致返回值不对:
                 // 1. agent解析dubbo返回数据不对
@@ -146,7 +146,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         };
 
-        responseFuture.addListener(callback, null);*//*
+        responseFuture.addListener(callback, null);*/
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
@@ -224,7 +224,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         }
         return parmMap;
-    }*/
+    }
 
 
 }
