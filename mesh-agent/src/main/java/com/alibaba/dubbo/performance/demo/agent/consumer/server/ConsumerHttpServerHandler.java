@@ -38,15 +38,16 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 /**
  * Created by carl.yu on 2016/12/16.
  */
-public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
-    private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(ConsumerHttpServerHandler.class);
     //private static ThreadPoolExecutor threadPoolExecutor;
-    private AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
+    private AsyncHttpClient asyncHttpClient;
 
     private static Object lock = new Object();
     RegisteGetThread registeGetThread;
-    public HttpServerHandler(RegisteGetThread registeGetThread){
+    public ConsumerHttpServerHandler(RegisteGetThread registeGetThread, AsyncHttpClient asyncHttpClient){
+        this.asyncHttpClient = asyncHttpClient;
         this.registeGetThread = registeGetThread;
     }
 

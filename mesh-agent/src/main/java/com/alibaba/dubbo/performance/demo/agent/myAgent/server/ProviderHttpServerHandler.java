@@ -30,11 +30,11 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 /**
  * Created by carl.yu on 2016/12/16.
  */
-public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private int count = 0;
-    private static Logger logger = LoggerFactory.getLogger(HttpServerHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(ProviderHttpServerHandler.class);
     private RpcClient rpcClient;
-    public HttpServerHandler(RpcClient rpcClient){
+    public ProviderHttpServerHandler(RpcClient rpcClient){
         this.rpcClient = rpcClient;
     }
 

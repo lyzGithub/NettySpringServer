@@ -73,7 +73,7 @@ public class HttpProviderServer {
                                 socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
                                 socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
                                 socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
-                                socketChannel.pipeline().addLast("ServerHandler",new HttpServerHandler(rpcClient));
+                                socketChannel.pipeline().addLast("ServerHandler",new ProviderHttpServerHandler(rpcClient));
                             }
                         });
                 System.out.println("服务器网址:"+host+":"+port);
