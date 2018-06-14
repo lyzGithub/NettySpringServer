@@ -33,18 +33,18 @@ public class RegisteGetThread {
     public Endpoint getEndPoint(){
         //调度
         Endpoint  endpoint;
-        int   index= array[ random.nextInt(size) ];
+        int   index= array[ random.nextInt(6) ];
         if(index == 0){
             return new Endpoint("10.10.10.3", 30000);
         }else if(index == 1){
             return new Endpoint("10.10.10.4", 30000);
-        }else if(index == 2){
+        }else{
             return new Endpoint("10.10.10.5", 30000);
         }
-        synchronized (lock) {
+        /*synchronized (lock) {
              endpoint= endpoints.get(index);
         }
-        return endpoint;
+        return endpoint;*/
 
     }
     class RunGetETCD implements Runnable{
