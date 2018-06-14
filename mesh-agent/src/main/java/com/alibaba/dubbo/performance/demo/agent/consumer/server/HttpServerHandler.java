@@ -141,23 +141,23 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             e.printStackTrace();
         }
         httpResponse.content().writeBytes(hashCode.getBytes());
-        System.out.println("hashCode: "+hashCode);
+        //System.out.println("hashCode: "+hashCode);
 
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
-        logger.info("return httpResponse");
+        //logger.info("return httpResponse");
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
-        /*if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
             future.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
                 public void operationComplete(io.netty.util.concurrent.Future future) throws Exception {
                     ctx.close();
                 }
             });
-        }*/
+        }
     }
 
     private void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){

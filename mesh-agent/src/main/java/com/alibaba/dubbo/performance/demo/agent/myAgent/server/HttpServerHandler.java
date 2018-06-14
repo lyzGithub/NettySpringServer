@@ -45,7 +45,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequest(ctx,fullHttpRequest);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));
+        //logger.info("spend time: " + (endM - startM));
         /*RunTread runTread = new RunTread(ctx, fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.start();*/
@@ -99,7 +99,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("return httpResponse result hashcode: " + new String(result));
+        //logger.info("return httpResponse result hashcode: " + new String(result));
 
         httpResponse.content().writeBytes(result);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
@@ -109,13 +109,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
-        /*if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
             future.addListener(new GenericFutureListener<Future<? super Void>>() {
                 public void operationComplete(io.netty.util.concurrent.Future future) throws Exception {
                     ctx.close();
                 }
             });
-        }*/
+        }
     }
 
     private void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
