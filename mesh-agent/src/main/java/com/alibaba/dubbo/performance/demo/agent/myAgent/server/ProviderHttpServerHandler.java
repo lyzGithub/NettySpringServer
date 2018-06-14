@@ -90,7 +90,6 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<FullH
             }
         }
 
-
         byte[] result = null;
 
         try {
