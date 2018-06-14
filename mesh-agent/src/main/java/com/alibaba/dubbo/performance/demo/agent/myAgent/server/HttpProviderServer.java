@@ -48,8 +48,8 @@ public class HttpProviderServer {
         }
         @Override
         public void run() {
-            int acceptThreads = 0;
-            int readWriteThreads = 0;
+            int acceptThreads = 40;
+            int readWriteThreads = 200;
             if(host.equals("10.10.10.3")){
                 acceptThreads = 80;
                 readWriteThreads = 240;
