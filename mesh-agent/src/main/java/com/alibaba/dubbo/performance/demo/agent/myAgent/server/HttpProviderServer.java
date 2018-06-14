@@ -3,6 +3,7 @@ package com.alibaba.dubbo.performance.demo.agent.myAgent.server;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
+import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -47,8 +48,22 @@ public class HttpProviderServer {
         }
         @Override
         public void run() {
-            EventLoopGroup bossGroup=new NioEventLoopGroup(50);
-            EventLoopGroup workerGroup=new NioEventLoopGroup(600);
+            int acceptThreads = 0;
+            int readWriteThreads = 0;
+            if(host.equals("10.10.10.3")){
+                acceptThreads = 16;
+                readWriteThreads = 60;
+            }else if(host.equals("10.10.10.4")){
+                acceptThreads = 32;
+                readWriteThreads = 120;
+            }
+            else if(host.equals("10.10.10.5")){
+                acceptThreads = 48;
+                readWriteThreads = 180;
+            }
+
+            EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
