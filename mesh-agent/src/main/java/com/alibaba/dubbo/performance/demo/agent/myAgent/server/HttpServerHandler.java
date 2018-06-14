@@ -45,14 +45,28 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
         //count++;
         //logger.info("Get request in the http server in consumer!!" + count);
-        long startM = System.currentTimeMillis();
+        /*long startM = System.currentTimeMillis();
         handleRequest(ctx,fullHttpRequest);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));
-
+        logger.info("spend time: " + (endM - startM));*/
+        RunTread runTread = new RunTread(ctx, fullHttpRequest);
+        Thread thread = new Thread(runTread);
+        thread.start();
     }
 
+    private class RunTread implements Runnable{
+        private ChannelHandlerContext ctx;
+        private  FullHttpRequest fullHttpRequest;
+        public RunTread(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+            this.ctx = ctx;
+            this.fullHttpRequest = fullHttpRequest;
+        }
+        @Override
+        public void run() {
+            handleRequest(ctx,fullHttpRequest);
+        }
+    }
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
