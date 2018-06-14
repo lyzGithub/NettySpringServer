@@ -38,21 +38,17 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         this.rpcClient = rpcClient;
     }
 
-
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-        /*Thread.sleep(1000);
-        handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
-        //count++;
-        //logger.info("Get request in the http server in consumer!!" + count);
-        /*long startM = System.currentTimeMillis();
+
+        long startM = System.currentTimeMillis();
         handleRequest(ctx,fullHttpRequest);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));*/
-        RunTread runTread = new RunTread(ctx, fullHttpRequest);
+        logger.info("spend time: " + (endM - startM));
+        /*RunTread runTread = new RunTread(ctx, fullHttpRequest);
         Thread thread = new Thread(runTread);
-        thread.start();
+        thread.start();*/
     }
 
     private class RunTread implements Runnable{
@@ -73,7 +69,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
         HttpMethod method = fullHttpRequest.method();
-        String hashCode = "";
+
         Map<String, String> paraMap = null;
         if (HttpMethod.POST == method) {
             // 是POST请求
