@@ -123,6 +123,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 e.printStackTrace();
             }
         };
+
         responseFuture.addListener(callback, null);
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
