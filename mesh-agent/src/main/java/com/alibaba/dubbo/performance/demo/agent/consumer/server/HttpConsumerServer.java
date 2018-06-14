@@ -43,9 +43,9 @@ public class HttpConsumerServer {
         }
         @Override
         public void run() {
-            int acceptThreads = 0;
+            int acceptThreads = 50;
             int readWriteThreads = 360;
-            EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
             EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
             RegisteGetThread registeGetThread = new RegisteGetThread();
             try{
