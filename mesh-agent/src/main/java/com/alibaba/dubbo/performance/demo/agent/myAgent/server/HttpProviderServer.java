@@ -47,8 +47,8 @@ public class HttpProviderServer {
         }
         @Override
         public void run() {
-            EventLoopGroup bossGroup=new NioEventLoopGroup(2);
-            EventLoopGroup workerGroup=new NioEventLoopGroup(400);
+            EventLoopGroup bossGroup=new NioEventLoopGroup(350);
+            EventLoopGroup workerGroup=new NioEventLoopGroup(350);
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)

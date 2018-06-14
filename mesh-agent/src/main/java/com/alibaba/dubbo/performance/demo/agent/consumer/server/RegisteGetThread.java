@@ -18,7 +18,14 @@ public class RegisteGetThread {
     private Random random = new Random();
     private int size = 0;
 
+    private int[] array = new int[6];
+
+
     public RegisteGetThread(){
+        array[0] = 0;
+        array[1] =1;array[2] =1;
+        array[3] =2;array[4] =2;array[5] = 2;
+
         RunGetETCD runGetETCD = new RunGetETCD();
         Thread t = new Thread(runGetETCD);
         t.start();
@@ -26,7 +33,14 @@ public class RegisteGetThread {
     public Endpoint getEndPoint(){
         //调度
         Endpoint  endpoint;
-        int   index= random.nextInt(size);
+        int   index= array[ random.nextInt(size) ];
+        if(index == 0){
+            return new Endpoint("10.10.10.3", 30000);
+        }else if(index == 1){
+            return new Endpoint("10.10.10.4", 30000);
+        }else if(index == 2){
+            return new Endpoint("10.10.10.5", 30000);
+        }
         synchronized (lock) {
              endpoint= endpoints.get(index);
         }
