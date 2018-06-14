@@ -1,6 +1,6 @@
 # Builder container
-#FROM registry.cn-hangzhou.aliyuncs.com/aliware2018/services AS builder
-FROM jyb AS builder
+FROM registry.cn-hangzhou.aliyuncs.com/aliware2018/services AS builder
+#FROM jyb AS builder
 
 COPY . /root/workspace/agent
 WORKDIR /root/workspace/agent
