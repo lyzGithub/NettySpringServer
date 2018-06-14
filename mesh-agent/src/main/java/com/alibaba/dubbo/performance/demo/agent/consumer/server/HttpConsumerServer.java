@@ -43,7 +43,7 @@ public class HttpConsumerServer {
         }
         @Override
         public void run() {
-            EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup bossGroup=new NioEventLoopGroup(2);
             EventLoopGroup workerGroup=new NioEventLoopGroup(400);
             RegisteGetThread registeGetThread = new RegisteGetThread();
             try{
