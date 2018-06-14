@@ -51,8 +51,7 @@ public class HttpConsumerServer {
             EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
             EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
             RegisteGetThread registeGetThread = new RegisteGetThread();
-            AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient(config()
-            .setMaxConnections(400).setMaxConnectionsPerHost(200).setPooledConnectionIdleTimeout(1000).setConnectionTtl(500));
+            AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
 
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
