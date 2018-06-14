@@ -22,7 +22,7 @@ public class RegisteGetThread {
 
 
     public RegisteGetThread(){
-        array[0] = 0;
+        array[0] =0;
         array[1] =1;array[2] =1;
         array[3] =2;array[4] =2;array[5] = 2;
 
@@ -32,7 +32,7 @@ public class RegisteGetThread {
     }
     public Endpoint getEndPoint(){
         //调度
-        Endpoint  endpoint;
+
         int   index= array[ random.nextInt(6) ];
         if(index == 0){
             return new Endpoint("10.10.10.3", 30000);
@@ -41,6 +41,7 @@ public class RegisteGetThread {
         }else{
             return new Endpoint("10.10.10.5", 30000);
         }
+        //Endpoint  endpoint;
         /*synchronized (lock) {
              endpoint= endpoints.get(index);
         }
