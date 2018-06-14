@@ -151,13 +151,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
-        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+        /*if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
             future.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
                 public void operationComplete(io.netty.util.concurrent.Future future) throws Exception {
                     ctx.close();
                 }
             });
-        }
+        }*/
     }
 
     private void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
