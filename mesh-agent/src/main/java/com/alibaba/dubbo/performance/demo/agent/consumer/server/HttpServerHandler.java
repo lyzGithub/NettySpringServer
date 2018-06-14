@@ -57,11 +57,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         handleRequestDirectReturnTest(ctx, fullHttpRequest);*/
         //count++;
         //logger.info("Get request in the http server in consumer!!" + count);
-        HttpRequestHolderThread httpRequestHolderThread = new HttpRequestHolderThread(ctx, fullHttpRequest,registeGetThread);
+        long startM = System.currentTimeMillis();
+        handleRequest(ctx,fullHttpRequest);
+        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        long endM = System.currentTimeMillis();
+        logger.info("spend time: " + (endM - startM));
 
     }
-
-
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
@@ -102,7 +104,17 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-        Runnable callback = () -> {
+        String hashCode = null;
+        try {
+            hashCode = responseFuture.get().getResponseBody();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        httpResponse.content().writeBytes(hashCode.getBytes());
+        System.out.println("hashCode: "+hashCode);
+        /*Runnable callback = () -> {
             try {
                 // 检查返回值是否正确,如果不正确返回500。有以下原因可能导致返回值不对:
                 // 1. agent解析dubbo返回数据不对
@@ -121,7 +133,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             }
         };
 
-        responseFuture.addListener(callback, null);
+        responseFuture.addListener(callback, null);*/
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
