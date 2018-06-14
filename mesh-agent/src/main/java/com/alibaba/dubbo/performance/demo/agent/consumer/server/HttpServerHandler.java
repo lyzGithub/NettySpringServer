@@ -55,8 +55,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
 
         //HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
-        handleRequest(ctx,fullHttpRequest);
+        //handleRequest(ctx,fullHttpRequest);
+        RunTread runTread = new RunTread(ctx,fullHttpRequest);
+        Thread thread = new Thread(runTread);
+        thread.run();
     }
+
+    private class RunTread implements Runnable{
+        private ChannelHandlerContext ctx;
+        private  FullHttpRequest fullHttpRequest;
+        public RunTread(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+            this.ctx = ctx;
+            this.fullHttpRequest = fullHttpRequest;
+        }
+        @Override
+        public void run() {
+            handleRequest(ctx,fullHttpRequest);
+        }
+    }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
@@ -126,27 +143,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         httpResponse.content().writeBytes(hashCode.getBytes());
         System.out.println("hashCode: "+hashCode);
 
-
-        /*Runnable callback = () -> {
-            try {
-                // 检查返回值是否正确,如果不正确返回500。有以下原因可能导致返回值不对:
-                // 1. agent解析dubbo返回数据不对
-                // 2. agent没有把request和dubbo的response对应起来
-                try {
-                    String hashCode = responseFuture.get().getResponseBody();
-                    httpResponse.content().writeBytes(hashCode.getBytes());
-                    System.out.println("hashCode: "+hashCode);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
-
-        responseFuture.addListener(callback, null);*/
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
