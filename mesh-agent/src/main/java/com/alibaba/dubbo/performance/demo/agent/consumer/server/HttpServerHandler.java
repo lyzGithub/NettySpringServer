@@ -70,7 +70,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 
         HttpMethod method = fullHttpRequest.method();
-        String hashCode = "";
+        //String hashCode = "";
         Map<String, String> paraMap = null;
         if (HttpMethod.POST == method) {
             // 是POST请求
@@ -105,20 +105,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
 
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-        responseFuture.addListener(new Runnable() {
-            @Override
-            public void run() {
+        Runnable callback = () -> {
+            try {
+                // 检查返回值是否正确,如果不正确返回500。有以下原因可能导致返回值不对:
+                // 1. agent解析dubbo返回数据不对
+                // 2. agent没有把request和dubbo的response对应起来
                 try {
                     String hashCode = responseFuture.get().getResponseBody();
                     httpResponse.content().writeBytes(hashCode.getBytes());
+                    System.out.println("hashCode: "+hashCode);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }, null);
-
+        };
+        responseFuture.addListener(callback, null);
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
