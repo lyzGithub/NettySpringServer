@@ -46,8 +46,8 @@ public class HttpConsumerServer {
         }
         @Override
         public void run() {
-            int acceptThreads = 100;
-            int readWriteThreads = 400;
+            int acceptThreads = 4;
+            int readWriteThreads = 40;
             EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
             EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
             RegisteGetThread registeGetThread = new RegisteGetThread();
@@ -83,7 +83,7 @@ public class HttpConsumerServer {
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
                 if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
+                    threadPoolExecutor = new ThreadPoolExecutor(400, 400, 600L,
                             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
                 }
             }
