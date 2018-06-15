@@ -56,11 +56,11 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
         //HttpRequestHolderThread.dealRequest();
         //HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
-        //handleRequest(ctx,fullHttpRequest);
+        handleRequest(ctx,fullHttpRequest);
         /*RunTread runTread = new RunTread(ctx,fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.run();*/
-        HttpConsumerServer.submit(new RunTread(ctx,fullHttpRequest));
+        //HttpConsumerServer.submit(new RunTread(ctx,fullHttpRequest));
     }
 
     private class RunTread implements Runnable{
