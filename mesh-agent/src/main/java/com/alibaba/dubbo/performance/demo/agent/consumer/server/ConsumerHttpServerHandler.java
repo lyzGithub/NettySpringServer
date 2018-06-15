@@ -40,29 +40,35 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     private int count = 0;
     private static Logger logger = LoggerFactory.getLogger(ConsumerHttpServerHandler.class);
     //private static ThreadPoolExecutor threadPoolExecutor;
-    private AsyncHttpClient asyncHttpClient;
+    private static AsyncHttpClient asyncHttpClient;
+    private static final ExecutorService executor = new ThreadPoolExecutor(50, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(100000));//CPU核数4-10倍
 
     private static Object lock = new Object();
-    RegisteGetThread registeGetThread;
+    private static RegisteGetThread registeGetThread;
     public ConsumerHttpServerHandler(RegisteGetThread registeGetThread, AsyncHttpClient asyncHttpClient){
         this.asyncHttpClient = asyncHttpClient;
         this.registeGetThread = registeGetThread;
     }
 
-
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-
         //handleRequest(ctx,fullHttpRequest);
-        RunTread runTread = new RunTread(ctx.channel(),fullHttpRequest);
+        /*RunTread runTread = new RunTread(ctx.channel(),fullHttpRequest);
         Thread thread = new Thread(runTread);
-        thread.run();
+        thread.run();*/
+        doBusiness(ctx,fullHttpRequest);
+    }
+    private void doBusiness(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) {
+        //异步线程池处理
+        executor.submit( () -> {
+            handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        });
     }
 
     private class RunTread implements Runnable{
-        private Channel ch;
+        private ChannelHandlerContext ch;
         private  FullHttpRequest fullHttpRequest;
-        public RunTread(Channel ch, FullHttpRequest fullHttpRequest){
+        public RunTread(ChannelHandlerContext ch, FullHttpRequest fullHttpRequest){
             this.ch = ch;
             this.fullHttpRequest = fullHttpRequest;
         }
@@ -82,7 +88,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
     }
 
-    private static void sendError(ChannelHandlerContext ctx,
+    private void sendError(ChannelHandlerContext ctx,
                                   HttpResponseStatus status) {
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
                 status, Unpooled.copiedBuffer("失败: " + status.toString()
@@ -92,7 +98,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     }
 
 
-    private void handleRequest(Channel ctx, FullHttpRequest fullHttpRequest){
+    private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
 
         HttpMethod method = fullHttpRequest.method();
@@ -159,7 +165,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
     }
 
-    private void handleRequestDirectReturnTest(Channel ctx, FullHttpRequest fullHttpRequest){
+    private  void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
@@ -209,7 +215,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     }
 
 
-    private Map<String, String> getParaMap(FullHttpRequest request){
+    public static Map<String, String> getParaMap(FullHttpRequest request){
         HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(request);
         decoder.offer(request);
         List<InterfaceHttpData> parmList = decoder.getBodyHttpDatas();

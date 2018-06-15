@@ -12,6 +12,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 import org.asynchttpclient.AsyncHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ public class HttpConsumerServer {
 
     private String host = "";
     private int port = 0;
+    private static final EventExecutorGroup group = new DefaultEventExecutorGroup(800);
 
     public HttpConsumerServer(String hostIp, int port){
         this.host = hostIp;
@@ -56,7 +59,6 @@ public class HttpConsumerServer {
             EventLoopGroup workerGroup=new NioEventLoopGroup();
             RegisteGetThread registeGetThread = new RegisteGetThread();
             AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
-
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
@@ -70,6 +72,7 @@ public class HttpConsumerServer {
                                 socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
                                 socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
                                 socketChannel.pipeline().addLast("ServerHandler",new ConsumerHttpServerHandler(registeGetThread,asyncHttpClient));
+
                             }
                         });
                 System.out.println("服务器网址:"+host+":"+port);
