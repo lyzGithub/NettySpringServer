@@ -48,10 +48,10 @@ public class HttpConsumerServer {
         public void run() {
             int acceptThreads = 100;
             int readWriteThreads = 400;
-            /*EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
-            EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);*/
-            EventLoopGroup bossGroup=new NioEventLoopGroup();
-            EventLoopGroup workerGroup=new NioEventLoopGroup();
+            EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
+            EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
+            /*EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup workerGroup=new NioEventLoopGroup();*/
             RegisteGetThread registeGetThread = new RegisteGetThread();
             AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
 
