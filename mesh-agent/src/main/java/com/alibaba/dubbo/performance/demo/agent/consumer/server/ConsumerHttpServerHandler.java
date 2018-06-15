@@ -55,12 +55,15 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-
+        long startM = System.currentTimeMillis();
         handleRequest(ctx,fullHttpRequest);
+        //handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        long endM = System.currentTimeMillis();
+        logger.info("spend time: " + (endM - startM));
         /*RunTread runTread = new RunTread(ctx,fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.run();*/
-        //HttpConsumerServer.submit(new RunTread(ctx,fullHttpRequest));
+
     }
 
     private class RunTread implements Runnable{
