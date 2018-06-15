@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -89,7 +90,7 @@ public class HttpConsumerServer {
     }
 
 
-    public static void submit(Runnable task){
+    public static void submit(Callable callable){
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
                 if (threadPoolExecutor == null) {
@@ -98,8 +99,8 @@ public class HttpConsumerServer {
                 }
             }
         }
-        threadPoolExecutor.submit(task);
-        logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
+        threadPoolExecutor.submit(callable);
+        //logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
     }
 
 

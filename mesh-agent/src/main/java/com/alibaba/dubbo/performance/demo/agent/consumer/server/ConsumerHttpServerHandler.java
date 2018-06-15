@@ -53,18 +53,17 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
         //handleRequest(ctx,fullHttpRequest);
-        /*RunTread runTread = new RunTread(ctx.channel(),fullHttpRequest);
+        /*RunTread runTread = new RunTread(ctx,fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.run();*/
-        doBusiness(ctx,fullHttpRequest);
-    }
-    private void doBusiness(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) {
-        //异步线程池处理
-        executor.submit( () -> {
-            handleRequestDirectReturnTest(ctx,fullHttpRequest);
+        HttpConsumerServer.submit(new Callable<Object>(){
+            @Override
+            public Object call() throws Exception {
+                handleRequestDirectReturnTest(ctx,fullHttpRequest);
+                return null;
+            }
         });
     }
-
     private class RunTread implements Runnable{
         private ChannelHandlerContext ch;
         private  FullHttpRequest fullHttpRequest;
@@ -205,13 +204,13 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
 
-        if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
+        /*if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
             future.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
                 public void operationComplete(Future future) throws Exception {
                     ctx.close();
                 }
             });
-        }
+        }*/
     }
 
 
