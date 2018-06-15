@@ -10,7 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClientConnecManager {
-    private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
+    private EventLoopGroup eventLoopGroup = new NioEventLoopGroup(100);
     private Bootstrap bootstrap;
     private Channel channel;
     private Object lock = new Object();
