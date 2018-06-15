@@ -186,11 +186,11 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
 
         hashCode = Integer.toString(paraMap.get("parameter").hashCode());
-        /*try {
+        try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
 
         byte[] hashBytes = hashCode.getBytes();
         httpResponse.content().writeBytes(hashBytes);
