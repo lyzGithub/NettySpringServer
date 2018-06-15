@@ -20,6 +20,7 @@ public class NettyClientConnecManager {
     public NettyClientConnecManager(String hostIp, int port) {
         this.hostIp = hostIp;
         this.port = port;
+        initBootstrap();
     }
 
     public Channel getChannel() throws Exception {

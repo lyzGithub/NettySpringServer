@@ -73,7 +73,7 @@ public class HttpProviderServer {
                         .channel(NioServerSocketChannel.class)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
-                                socketChannel.pipeline().addLast(new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
+                                socketChannel.pipeline().addLast(new ObjectDecoder(2048, ClassResolvers.cacheDisabled(this
                                                 .getClass().getClassLoader())));
                                 socketChannel.pipeline().addLast(new ObjectEncoder());
                                 socketChannel.pipeline().addLast("ServerHandler",new ProviderHttpServerHandler(rpcClient));
