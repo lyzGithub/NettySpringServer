@@ -97,8 +97,6 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<MyStr
 
     }
 
-
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
             throws Exception {
