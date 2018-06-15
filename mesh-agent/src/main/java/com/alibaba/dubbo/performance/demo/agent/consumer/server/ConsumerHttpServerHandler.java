@@ -106,10 +106,12 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
 
 
         Endpoint endpoint = registeGetThread.getEndPoint();
+
         long startM = System.currentTimeMillis();
         NettyClient nettyClient = ToProviderHolder.getClient(endpoint.getHost(),endpoint.getPort());
         long endM = System.currentTimeMillis();
         logger.info("get client spend time: " + (endM - startM));
+
         byte[] result=  null;
         try {
             result = (byte[]) nettyClient.invoke(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),paraMap.get("parameter"));

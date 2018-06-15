@@ -23,11 +23,11 @@ public class NettyClient {
         MyStringRequest myStringRequest = new MyStringRequest(interfaceName,method,parameterTypesString,
                 parameter);
         NettyClientFuture future = new NettyClientFuture();
-        long startM1 = System.currentTimeMillis();
 
+        long startM1 = System.currentTimeMillis();
         NettyRequestHolder.put(myStringRequest.getId(),future);
         long endM1 = System.currentTimeMillis();
-        logger.info("waiting response spend time: " + (endM1 - startM1));
+        logger.info("put request spend time: " + (endM1 - startM1));
 
 
         long startM2 = System.currentTimeMillis();
