@@ -93,7 +93,6 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<MyStr
 
         byte[] hashBytes = hashCode.getBytes();
         MyStringResponse response = new MyStringResponse(request.getId(),hashBytes);
-
         ChannelFuture future = ctx.writeAndFlush(response);
 
     }

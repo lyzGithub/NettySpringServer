@@ -2,7 +2,7 @@ package com.alibaba.dubbo.performance.demo.agent;
 
 import com.alibaba.dubbo.performance.demo.agent.consumer.server.HttpConsumerServer;
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
-import com.alibaba.dubbo.performance.demo.agent.myAgent.server.HttpProviderServer;
+import com.alibaba.dubbo.performance.demo.agent.provider.server.HttpProviderServer;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
