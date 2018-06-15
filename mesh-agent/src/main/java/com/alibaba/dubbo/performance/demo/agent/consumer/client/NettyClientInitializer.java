@@ -11,7 +11,7 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) {
         ChannelPipeline pipeline = socketChannel.pipeline();
-        pipeline.addLast(new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
+        pipeline.addLast(new ObjectDecoder(2048, ClassResolvers.cacheDisabled(this
                         .getClass().getClassLoader())));
         pipeline.addLast(new ObjectEncoder());
         pipeline.addLast(new NettyClientHandler());
