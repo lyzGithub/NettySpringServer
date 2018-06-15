@@ -90,7 +90,7 @@ public class HttpConsumerServer {
     }
 
 
-    public static void submit(Callable callable){
+    public static void submit(Runnable task){
         if (threadPoolExecutor == null) {
             synchronized (HttpConsumerServer.class) {
                 if (threadPoolExecutor == null) {
@@ -99,7 +99,7 @@ public class HttpConsumerServer {
                 }
             }
         }
-        threadPoolExecutor.submit(callable);
+        threadPoolExecutor.submit(task);
         //logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
     }
 
