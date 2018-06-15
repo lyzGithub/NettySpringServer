@@ -28,31 +28,56 @@ import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 
 public class HttpRequestHolderThread {
     private static Logger logger = LoggerFactory.getLogger(HttpRequestHolderThread.class);
-    private static AsyncHttpClient asyncHttpClient = org.asynchttpclient.Dsl.asyncHttpClient();
-
-    private ChannelHandlerContext ctx;
-    private FullHttpRequest fullHttpRequest;
-
+    private static AsyncHttpClient asyncHttpClient;
 
     private static ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(16, 16, 600L,
             TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
 
-    public static void dealRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest, RegisteGetThread registeGetThread) {
+    public static void dealRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,
+                                   RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient) {
         //异步线程池处理
         threadPoolExecutor.submit( () -> {
             long startM = System.currentTimeMillis();
-            handleRequest(ctx,fullHttpRequest,registeGetThread);
-            //handleRequestDirectReturnTest(ctx,fullHttpRequest);
+            //handleRequest(ctx,fullHttpRequest,registeGetThread,asyncHttpClient);
+            handleRequestDirectReturnTest(ctx,fullHttpRequest,registeGetThread,asyncHttpClient);
             long endM = System.currentTimeMillis();
-            logger.info("spend time: " + (endM - startM));
+            logger.info("deal done! spend time: " + (endM - startM));
         });
     }
 
-    public HttpRequestHolderThread(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,RegisteGetThread registeGetThread){
+    public HttpRequestHolderThread(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,
+                                   RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient){
 
     }
+    public static void RunStanAloneThread(ChannelHandlerContext ch, FullHttpRequest fullHttpRequest,
+                                          RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient){
+        RunTread runTread = new RunTread(ch,fullHttpRequest,registeGetThread,asyncHttpClient);
+        Thread thread = new Thread(runTread);
+        thread.start();
 
-    private static void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,RegisteGetThread registeGetThread){
+    }
+    private static class RunTread implements Runnable{
+        private ChannelHandlerContext ch;
+        private  FullHttpRequest fullHttpRequest;
+        private RegisteGetThread registeGetThread;
+        private AsyncHttpClient asyncHttpClient;
+        public RunTread(ChannelHandlerContext ch, FullHttpRequest fullHttpRequest,
+                        RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient){
+            this.ch = ch;
+            this.fullHttpRequest = fullHttpRequest;
+            this.registeGetThread = registeGetThread;
+            this.asyncHttpClient = asyncHttpClient;
+        }
+        @Override
+        public void run() {
+            handleRequestDirectReturnTest(ch,fullHttpRequest,registeGetThread,asyncHttpClient);
+            //handleRequest(ch,fullHttpRequest);
+            System.out.println("thread finish!");
+            Thread.interrupted();
+        }
+    }
+    public static void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,
+                                     RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient){
         HttpMethod method = fullHttpRequest.method();
         //String hashCode = "";
         Map<String, String> paraMap = null;
@@ -116,7 +141,8 @@ public class HttpRequestHolderThread {
         }
     }
 
-    private static  void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+    public static  void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest,
+                                                      RegisteGetThread registeGetThread,AsyncHttpClient asyncHttpClient){
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
@@ -143,7 +169,11 @@ public class HttpRequestHolderThread {
         }
 
         hashCode = Integer.toString(paraMap.get("parameter").hashCode());
-
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         byte[] hashBytes = hashCode.getBytes();
         httpResponse.content().writeBytes(hashBytes);
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");

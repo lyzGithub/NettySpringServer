@@ -90,20 +90,6 @@ public class HttpConsumerServer {
     }
 
 
-    public static void submit(Runnable task){
-        if (threadPoolExecutor == null) {
-            synchronized (HttpConsumerServer.class) {
-                if (threadPoolExecutor == null) {
-                    threadPoolExecutor = new ThreadPoolExecutor(16, 64, 600L,
-                            TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(65536));
-                }
-            }
-        }
-        threadPoolExecutor.submit(task);
-        //logger.info("Consumer Server now active thread is: "+threadPoolExecutor.getActiveCount());
-    }
-
-
     public static void main(String host, int port) throws Exception {
         new HttpConsumerServer(host,port);
     }
