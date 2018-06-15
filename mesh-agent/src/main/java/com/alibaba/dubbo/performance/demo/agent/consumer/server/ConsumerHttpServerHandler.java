@@ -2,10 +2,8 @@ package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
 import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoop;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -54,24 +52,24 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-        //HttpRequestHolderThread.dealRequest();
-        //HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
+
         //handleRequest(ctx,fullHttpRequest);
-        RunTread runTread = new RunTread(ctx,fullHttpRequest);
+        RunTread runTread = new RunTread(ctx.channel(),fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.run();
     }
 
     private class RunTread implements Runnable{
-        private ChannelHandlerContext ctx;
+        private Channel ch;
         private  FullHttpRequest fullHttpRequest;
-        public RunTread(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
-            this.ctx = ctx;
+        public RunTread(Channel ch, FullHttpRequest fullHttpRequest){
+            this.ch = ch;
             this.fullHttpRequest = fullHttpRequest;
         }
         @Override
         public void run() {
-            handleRequest(ctx,fullHttpRequest);
+            handleRequestDirectReturnTest(ch,fullHttpRequest);
+            //handleRequest(ch,fullHttpRequest);
         }
     }
 
@@ -94,7 +92,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
     }
 
 
-    private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+    private void handleRequest(Channel ctx, FullHttpRequest fullHttpRequest){
 
 
         HttpMethod method = fullHttpRequest.method();
@@ -161,7 +159,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
     }
 
-    private void handleRequestDirectReturnTest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
+    private void handleRequestDirectReturnTest(Channel ctx, FullHttpRequest fullHttpRequest){
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
 
