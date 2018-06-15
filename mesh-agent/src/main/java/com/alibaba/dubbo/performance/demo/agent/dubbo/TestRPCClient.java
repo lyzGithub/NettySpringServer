@@ -12,7 +12,7 @@ public class TestRPCClient {
     private long count= 0;
     public TestRPCClient(){
         this.rpcClient = new RpcClient();
-        int getNum = 10;
+        int getNum = 100;
         RunGetETCD[] rS = new RunGetETCD[getNum];
         for(int i = 0; i< getNum; i++) {
             RunGetETCD runGetETCD = new RunGetETCD();
