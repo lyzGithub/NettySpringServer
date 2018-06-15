@@ -59,7 +59,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         handleRequest(ctx,fullHttpRequest);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
         long endM = System.currentTimeMillis();
-        logger.info("spend time: " + (endM - startM));
+        logger.info("all spend time: " + (endM - startM));
         /*RunTread runTread = new RunTread(ctx,fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.run();*/
@@ -103,14 +103,21 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
                 e.printStackTrace();
             }
         }
+
+
         Endpoint endpoint = registeGetThread.getEndPoint();
+        long startM = System.currentTimeMillis();
         NettyClient nettyClient = ToProviderHolder.getClient(endpoint.getHost(),endpoint.getPort());
+        long endM = System.currentTimeMillis();
+        logger.info("get client spend time: " + (endM - startM));
         byte[] result=  null;
         try {
             result = (byte[]) nettyClient.invoke(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),paraMap.get("parameter"));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
 
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
         httpResponse.content().writeBytes(result);

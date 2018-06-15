@@ -23,18 +23,28 @@ public class NettyClient {
         MyStringRequest myStringRequest = new MyStringRequest(interfaceName,method,parameterTypesString,
                 parameter);
         NettyClientFuture future = new NettyClientFuture();
+        long startM1 = System.currentTimeMillis();
+
         NettyRequestHolder.put(myStringRequest.getId(),future);
+        long endM1 = System.currentTimeMillis();
+        logger.info("waiting response spend time: " + (endM1 - startM1));
 
+
+        long startM2 = System.currentTimeMillis();
         channel.writeAndFlush(myStringRequest);
+        long endM2 = System.currentTimeMillis();
+        logger.info("write flush request spend time: " + (endM2 - startM2));
 
+
+        long startM3 = System.currentTimeMillis();
         Object result = null;
         try {
             result = future.get();
         }catch (Exception e){
             e.printStackTrace();
         }
-        //logger.info("return requestId=" + request.getId() + new String((byte[])result));
-
+        long endM3 = System.currentTimeMillis();
+        logger.info("waiting response spend time: " + (endM3 - startM3));
         return result;
     }
 }
