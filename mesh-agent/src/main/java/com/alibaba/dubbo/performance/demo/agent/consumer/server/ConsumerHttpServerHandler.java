@@ -201,7 +201,7 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
 
         ChannelFuture future = ctx.writeAndFlush(httpResponse);
-
+        System.out.println("write done!");
         /*if (!HttpUtil.isKeepAlive(fullHttpRequest)) {
             future.addListener(new GenericFutureListener<io.netty.util.concurrent.Future<? super Void>>() {
                 public void operationComplete(Future future) throws Exception {
