@@ -43,11 +43,11 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<MyStr
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final MyStringRequest request) throws Exception {
 
-        //long startM = System.currentTimeMillis();
+        long startM = System.currentTimeMillis();
         handleRequest(ctx,request);
         //handleRequestDirectReturnTest(ctx,fullHttpRequest);
-        //long endM = System.currentTimeMillis();
-        //logger.info("spend time: " + (endM - startM));
+        long endM = System.currentTimeMillis();
+        logger.info("spend time: " + (endM - startM));
         /*RunTread runTread = new RunTread(ctx, fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.start();*/
