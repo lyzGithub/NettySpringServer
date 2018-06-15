@@ -1,6 +1,8 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.client.model;
 
-public class MyStringResponse {
+import java.io.Serializable;
+
+public class MyStringResponse implements Serializable {
     private String requestId;
     private byte[] bytes;
 

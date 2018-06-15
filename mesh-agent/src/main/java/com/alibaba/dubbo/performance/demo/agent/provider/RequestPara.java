@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.myAgent;
+package com.alibaba.dubbo.performance.demo.agent.provider;
 
 public class RequestPara {
     private String interfaceName;

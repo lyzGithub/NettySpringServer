@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.consumer.client.NettyClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -54,12 +55,11 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest fullHttpRequest) throws Exception {
-        //HttpRequestHolderThread.dealRequest();
-        //HttpRequestHolderThread.dealRequest(ctx,fullHttpRequest,registeGetThread);
-        //handleRequest(ctx,fullHttpRequest);
-        RunTread runTread = new RunTread(ctx,fullHttpRequest);
+
+        handleRequest(ctx,fullHttpRequest);
+        /*RunTread runTread = new RunTread(ctx,fullHttpRequest);
         Thread thread = new Thread(runTread);
-        thread.run();
+        thread.run();*/
         //HttpConsumerServer.submit(new RunTread(ctx,fullHttpRequest));
     }
 
@@ -76,27 +76,8 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-            throws Exception {
-        cause.printStackTrace();
-        if (ctx.channel().isActive()) {
-            sendError(ctx, INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    private static void sendError(ChannelHandlerContext ctx,
-                                  HttpResponseStatus status) {
-        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
-                status, Unpooled.copiedBuffer("失败: " + status.toString()
-                + "\r\n", CharsetUtil.UTF_8));
-        response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-    }
-
 
     private void handleRequest(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest){
-
 
         HttpMethod method = fullHttpRequest.method();
         //String hashCode = "";
@@ -119,32 +100,18 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
                 e.printStackTrace();
             }
         }
-
         Endpoint endpoint = registeGetThread.getEndPoint();
-        String url = "http://"+endpoint.getHost()+":"+endpoint.getPort();
-
-        org.asynchttpclient.Request request = org.asynchttpclient.Dsl.post(url)
-                .addFormParam("interface", paraMap.get("interface"))
-                .addFormParam("method", paraMap.get("method"))
-                .addFormParam("parameterTypesString", paraMap.get("parameterTypesString"))
-                .addFormParam("parameter", paraMap.get("parameter"))
-                .build();
-
-        ListenableFuture<Response> responseFuture = asyncHttpClient.executeRequest(request);
-
-
-        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
-        String hashCode = null;
+        NettyClient nettyClient = ToProviderHolder.getClient(endpoint.getHost(),endpoint.getPort());
+        byte[] result=  null;
         try {
-            hashCode = responseFuture.get().getResponseBody();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            result = (byte[]) nettyClient.invoke(paraMap.get("interface"),paraMap.get("method"),paraMap.get("parameterTypesString"),paraMap.get("parameter"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        httpResponse.content().writeBytes(hashCode.getBytes());
-        //System.out.println("hashCode: "+hashCode);
 
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1 , OK);
+        httpResponse.content().writeBytes(result);
+        //System.out.println("hashCode: "+hashCode);
 
         httpResponse.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
         httpResponse.headers().setInt( CONTENT_LENGTH, httpResponse.content().writerIndex());
@@ -223,6 +190,24 @@ public class ConsumerHttpServerHandler extends SimpleChannelInboundHandler<FullH
         }
         return parmMap;
     }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+            throws Exception {
+        cause.printStackTrace();
+        if (ctx.channel().isActive()) {
+            sendError(ctx, INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static void sendError(ChannelHandlerContext ctx,
+                                  HttpResponseStatus status) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1,
+                status, Unpooled.copiedBuffer("失败: " + status.toString()
+                + "\r\n", CharsetUtil.UTF_8));
+        response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
 
 
 }

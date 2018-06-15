@@ -1,4 +1,4 @@
-package com.alibaba.dubbo.performance.demo.agent.myAgent.server;
+package com.alibaba.dubbo.performance.demo.agent.provider.server;
 
 import com.alibaba.dubbo.performance.demo.agent.dubbo.RpcClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
@@ -14,6 +14,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.slf4j.Logger;
@@ -70,9 +73,9 @@ public class HttpProviderServer {
                         .channel(NioServerSocketChannel.class)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
-                                socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
-                                socketChannel.pipeline().addLast("http-aggregator",new HttpObjectAggregator(65536));
-                                socketChannel.pipeline().addLast("http-encoder",new HttpResponseEncoder());
+                                socketChannel.pipeline().addLast(new ObjectDecoder(1024, ClassResolvers.cacheDisabled(this
+                                                .getClass().getClassLoader())));
+                                socketChannel.pipeline().addLast(new ObjectEncoder());
                                 socketChannel.pipeline().addLast("ServerHandler",new ProviderHttpServerHandler(rpcClient));
                             }
                         });

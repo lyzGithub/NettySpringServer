@@ -1,5 +1,6 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
+import com.alibaba.dubbo.performance.demo.agent.consumer.client.NettyClient;
 import com.alibaba.dubbo.performance.demo.agent.registry.Endpoint;
 import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
@@ -57,6 +58,12 @@ public class RegisteGetThread {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
                         size = endpoints.size();
+                        for(int i = 0; i<size; i++){
+                            Endpoint endpoint = endpoints.get(i);
+                            final String host = endpoint.getHost();
+                            final int port = endpoint.getPort();
+                            ToProviderHolder.setClient(host, port, new NettyClient(host,port));
+                        }
                         logger.info("endpoint size: " + size);
 
                     } catch (Exception e) {
@@ -65,7 +72,7 @@ public class RegisteGetThread {
                 }
                 //System.out.println("endpoints.size()" + size);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
