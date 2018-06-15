@@ -51,13 +51,16 @@ public class RegisteGetThread {
     class RunGetETCD implements Runnable{
         @Override
         public void run() {
-
+            boolean is = false;
             while(true) {
                 synchronized (lock) {
                     try {
                         endpoints = registry.find("com.alibaba.dubbo.performance.demo.provider.IHelloService");
                         size = endpoints.size();
-                        logger.info("endpoint size: " + size);
+                        if(size == 3 && !is) {
+                            logger.info("endpoint size: " + size);
+                            is = true;
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
