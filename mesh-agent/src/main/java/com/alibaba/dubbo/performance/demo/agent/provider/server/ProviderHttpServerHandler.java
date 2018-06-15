@@ -8,6 +8,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.nio.NioEventLoop;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
@@ -51,6 +52,7 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<MyStr
         /*RunTread runTread = new RunTread(ctx, fullHttpRequest);
         Thread thread = new Thread(runTread);
         thread.start();*/
+
     }
 
     private class RunTread implements Runnable{

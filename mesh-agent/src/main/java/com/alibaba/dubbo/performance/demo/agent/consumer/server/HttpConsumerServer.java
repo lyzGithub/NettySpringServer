@@ -1,9 +1,8 @@
 package com.alibaba.dubbo.performance.demo.agent.consumer.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -57,6 +56,7 @@ public class HttpConsumerServer {
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
                         .channel(NioServerSocketChannel.class)
+                        .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());

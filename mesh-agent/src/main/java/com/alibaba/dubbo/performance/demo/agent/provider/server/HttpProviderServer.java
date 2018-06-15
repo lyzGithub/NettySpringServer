@@ -5,6 +5,7 @@ import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -72,6 +73,7 @@ public class HttpProviderServer {
                 bootstrap.group(bossGroup,workerGroup)
                         .channel(NioServerSocketChannel.class)
                         .option(ChannelOption.TCP_NODELAY, true)
+                        .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                         .option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
