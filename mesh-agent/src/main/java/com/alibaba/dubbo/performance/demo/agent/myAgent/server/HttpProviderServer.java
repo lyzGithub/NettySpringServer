@@ -49,17 +49,17 @@ public class HttpProviderServer {
         @Override
         public void run() {
             int acceptThreads = 40;
-            int readWriteThreads = 200;
+            int readWriteThreads = 80;
             if(host.equals("10.10.10.3")){
                 acceptThreads = 80;
                 readWriteThreads = 240;
             }else if(host.equals("10.10.10.4")){
-                acceptThreads = 120;
-                readWriteThreads = 480;
+                acceptThreads = 90;
+                readWriteThreads = 360;
             }
             else if(host.equals("10.10.10.5")){
-                acceptThreads = 160;
-                readWriteThreads = 720;
+                acceptThreads = 100;
+                readWriteThreads = 400;
             }
 
             EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
