@@ -44,8 +44,8 @@ public class ProviderHttpServerHandler extends SimpleChannelInboundHandler<MyStr
     protected void channelRead0(final ChannelHandlerContext ctx, final MyStringRequest request) throws Exception {
 
         long startM = System.currentTimeMillis();
-        //handleRequest(ctx,request);
-        handleRequestDirectReturnTest(ctx,request);
+        handleRequest(ctx,request);
+        //handleRequestDirectReturnTest(ctx,request);
         long endM = System.currentTimeMillis();
         logger.info("spend time: " + (endM - startM));
         /*RunTread runTread = new RunTread(ctx, fullHttpRequest);
