@@ -61,9 +61,9 @@ public class HttpConsumerServer {
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
                         .channel(NioServerSocketChannel.class)
-                        .option(ChannelOption.SO_KEEPALIVE, true)
+                        /*.option(ChannelOption.SO_KEEPALIVE, true)
                         .option(ChannelOption.TCP_NODELAY, true)
-                        .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+                        .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)*/
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 socketChannel.pipeline().addLast("http-decoder",new HttpRequestDecoder());
