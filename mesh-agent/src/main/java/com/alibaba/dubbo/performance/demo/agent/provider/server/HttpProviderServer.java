@@ -5,9 +5,7 @@ import com.alibaba.dubbo.performance.demo.agent.registry.EtcdRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IRegistry;
 import com.alibaba.dubbo.performance.demo.agent.registry.IpHelper;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -65,12 +63,16 @@ public class HttpProviderServer {
                 readWriteThreads = 400;
             }
 
-            EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
-            EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);
+            /*EventLoopGroup bossGroup=new NioEventLoopGroup(acceptThreads);
+            EventLoopGroup workerGroup=new NioEventLoopGroup(readWriteThreads);*/
+            EventLoopGroup bossGroup=new NioEventLoopGroup();
+            EventLoopGroup workerGroup=new NioEventLoopGroup();
             try{
                 ServerBootstrap bootstrap=new ServerBootstrap();
                 bootstrap.group(bossGroup,workerGroup)
                         .channel(NioServerSocketChannel.class)
+                        .option(ChannelOption.TCP_NODELAY, true)
+                        .option(ChannelOption.RCVBUF_ALLOCATOR, AdaptiveRecvByteBufAllocator.DEFAULT)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 socketChannel.pipeline().addLast(new ObjectDecoder(2048, ClassResolvers.cacheDisabled(this
